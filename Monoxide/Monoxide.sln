@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.MacOS", "System.MacOS\System.MacOS.csproj", "{F93BAEC6-8403-42B1-BA86-71E00A1450FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication", "TestApplication\TestApplication.csproj", "{A59E2891-4D40-458D-AAA9-756423B838B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDocumentationBrowser", "MonoDocumentationBrowser\MonoDocumentationBrowser.csproj", "{38EBF63F-C4E9-404F-94D8-D8FD9A0F6B0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandsTest", "CommandsTest\CommandsTest.csproj", "{34C88295-1D35-4714-B8E9-5F646790293E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monoxide", "Monoxide\Monoxide.csproj", "{440F8624-49C5-4D19-A67F-A1CB03C68F79}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{34C88295-1D35-4714-B8E9-5F646790293E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34C88295-1D35-4714-B8E9-5F646790293E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34C88295-1D35-4714-B8E9-5F646790293E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34C88295-1D35-4714-B8E9-5F646790293E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38EBF63F-C4E9-404F-94D8-D8FD9A0F6B0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38EBF63F-C4E9-404F-94D8-D8FD9A0F6B0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38EBF63F-C4E9-404F-94D8-D8FD9A0F6B0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38EBF63F-C4E9-404F-94D8-D8FD9A0F6B0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{440F8624-49C5-4D19-A67F-A1CB03C68F79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{440F8624-49C5-4D19-A67F-A1CB03C68F79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{440F8624-49C5-4D19-A67F-A1CB03C68F79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{440F8624-49C5-4D19-A67F-A1CB03C68F79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A59E2891-4D40-458D-AAA9-756423B838B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A59E2891-4D40-458D-AAA9-756423B838B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A59E2891-4D40-458D-AAA9-756423B838B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A59E2891-4D40-458D-AAA9-756423B838B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F93BAEC6-8403-42B1-BA86-71E00A1450FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F93BAEC6-8403-42B1-BA86-71E00A1450FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F93BAEC6-8403-42B1-BA86-71E00A1450FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F93BAEC6-8403-42B1-BA86-71E00A1450FE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = TestApplication\TestApplication.csproj
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

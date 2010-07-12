@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F93BAEC6-8403-42B1-BA86-71E00A1450FE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>System.MacOS</RootNamespace>
+    <AssemblyName>System.MacOS</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\System.MacOS.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TESTING</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TESTING</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ObjectiveC.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SafeNativeMethods.cs" />
+    <Compile Include="AutoReleasePool.cs" />
+    <Compile Include="NativeObjectHandle.cs" />
+    <Compile Include="NativeObjectCache.cs" />
+    <Compile Include="AppKit\Size.cs" />
+    <Compile Include="AppKit\Point.cs" />
+    <Compile Include="AppKit\Rectangle.cs" />
+    <Compile Include="AppKit\WindowStyle.cs" />
+    <Compile Include="AppKit\Alert.cs" />
+    <Compile Include="AppKit\DockTile.cs" />
+    <Compile Include="AppKit\Application.cs" />
+    <Compile Include="AppKit\PresentationOptions.cs" />
+    <Compile Include="AppKit\View.cs" />
+    <Compile Include="AppKit\Window.cs" />
+    <Compile Include="AppKit\Panel.cs" />
+    <Compile Include="AppKit\Menu.cs" />
+    <Compile Include="AppKit\ColorPanel.cs" />
+    <Compile Include="AppKit\FontPanel.cs" />
+    <Compile Include="AppKit\SavePanel.cs" />
+    <Compile Include="AppKit\OpenPanel.cs" />
+    <Compile Include="AppKit\Control.cs" />
+    <Compile Include="AppKit\MenuItem.cs" />
+    <Compile Include="AppKit\Button.cs" />
+    <Compile Include="AppKit\CommonSelectors.cs" />
+    <Compile Include="LocalAutoReleasePool.cs" />
+    <Compile Include="AppKit\ModifierKeys.cs" />
+    <Compile Include="AppKit\ShortcutKey.cs" />
+    <Compile Include="NativeStringMarshaler.cs" />
+    <Compile Include="AppKit\Bundle.cs" />
+    <Compile Include="AppKit\ButtonType.cs" />
+    <Compile Include="AppKit\BezelStyle.cs" />
+    <Compile Include="AppKit\ButtonState.cs" />
+    <Compile Include="AppKit\PopupButton.cs" />
+    <Compile Include="AppKit\Command.cs" />
+    <Compile Include="StringResultMarshaler.cs" />
+    <Compile Include="AppKit\CommonClasses.cs" />
+    <Compile Include="AppKit\AlertStyle.cs" />
+    <Compile Include="AppKit\OpenGLView.cs" />
+    <Compile Include="AppKit\ColorWell.cs" />
+    <Compile Include="AppKit\TextField.cs" />
+    <Compile Include="AppKit\SearchField.cs" />
+    <Compile Include="AppKit\Cursor.cs" />
+    <Compile Include="AppKit\ComboBox.cs" />
+    <Compile Include="WebKit\WebView.cs" />
+    <Compile Include="AppKit\Browser.cs" />
+    <Compile Include="AppKit\LayoutOptions.cs" />
+    <Compile Include="WebKit\WebFrame.cs" />
+    <Compile Include="AppKit\ApplicationNotRunningException.cs" />
+    <Compile Include="NativeUrlMarshaler.cs" />
+    <Compile Include="AppKit\OutlineView.cs" />
+    <Compile Include="AppKit\SplitView.cs" />
+    <Compile Include="AppKit\DividerStyle.cs" />
+    <Compile Include="AppKit\Edge.cs" />
+    <Compile Include="AppKit\Orientation.cs" />
+    <Compile Include="AppKit\OutlineViewBase.cs" />
+    <Compile Include="AppKit\TreeNode.cs" />
+    <Compile Include="AppKit\TableColumn.cs" />
+    <Compile Include="AppKit\ScrollView.cs" />
+    <Compile Include="AppKit\TableViewBase.cs" />
+    <Compile Include="AppKit\Axis.cs" />
+    <Compile Include="AppKit\CommandTarget.cs" />
+    <Compile Include="AppKit\NameFormatException.cs" />
+    <Compile Include="ClassNotFoundException.cs" />
+    <Compile Include="ObjectiveC.Bridging.cs" />
+    <Compile Include="AppKit\ICommandItem.cs" />
+    <Compile Include="SelectorImplementationAttribute.cs" />
+    <Compile Include="NativeClassAttribute.cs" />
+    <Compile Include="SelectorStubAttribute.cs" />
+    <Compile Include="BridgeMode.cs" />
+    <Compile Include="AppKit\CommandHandler.cs" />
+    <Compile Include="AppKit\SeparatorMenuItem.cs" />
+    <Compile Include="AppKit\Toolbar.cs" />
+    <Compile Include="AppKit\TextView.cs" />
+    <Compile Include="AppKit\EventTarget.cs" />
+    <Compile Include="AppKit\CommandCache.cs" />
+    <Compile Include="AppKit\CommandAttribute.cs" />
+    <Compile Include="AppKit\PropertyGrid.cs" />
+    <Compile Include="AppKit\ToolbarDisplayStyle.cs" />
+    <Compile Include="AppKit\Image.cs" />
+    <Compile Include="AppKit\MenuItemKind.cs" />
+    <Compile Include="CoreFoundation\Locale.cs" />
+    <Compile Include="Localization.cs" />
+    <Compile Include="AppKit\ToolbarItem.cs" />
+    <Compile Include="AppKit\ToolbarTemplate.cs" />
+    <Compile Include="AppKit\ItemWrapper.cs" />
+    <Compile Include="Casing.cs" />
+    <Compile Include="AppKit\ImageToolbarItem.cs" />
+    <Compile Include="AppKit\ViewToolbarItem.cs" />
+    <Compile Include="AppKit\SegmentedControl.cs" />
+    <Compile Include="AppKit\SegmentStyle.cs" />
+    <Compile Include="AppKit\Segment.cs" />
+    <Compile Include="AppKit\ActionCell.cs" />
+    <Compile Include="AppKit\Cell.cs" />
+    <Compile Include="AppKit\ButtonCell.cs" />
+    <Compile Include="AppKit\DefaultCellTypeAttribute.cs" />
+    <Compile Include="AppKit\LayoutDirection.cs" />
+    <Compile Include="AppKit\SegmentedCell.cs" />
+    <Compile Include="AppKit\TextFieldCell.cs" />
+    <Compile Include="AppKit\SearchFieldCell.cs" />
+    <Compile Include="AppKit\ComboBoxCell.cs" />
+    <Compile Include="AppKit\BrowserCell.cs" />
+    <Compile Include="StubKind.cs" />
+    <Compile Include="AppKit\ImageScaleMode.cs" />
+    <Compile Include="AppKit\ItemSelectionMode.cs" />
+    <Compile Include="AppKit\TableHeaderCell.cs" />
+    <Compile Include="AppKit\ColumnSizeMode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AppKit\Commands.fr.resx" />
+    <EmbeddedResource Include="AppKit\Commands.resx" />
+    <EmbeddedResource Include="ErrorMessages.fr.resx" />
+    <EmbeddedResource Include="ErrorMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Quartz\" />
+    <Folder Include="WebKit\" />
+    <Folder Include="CoreFoundation\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="MSBuild" />
+        </Policies>
+        <Deployment.LinuxDeployData generatePcFile="false" />
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>
