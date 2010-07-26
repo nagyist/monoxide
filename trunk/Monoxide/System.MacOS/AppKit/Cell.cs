@@ -5,6 +5,19 @@ namespace System.MacOS.AppKit
 	[NativeClass("NSCell", "AppKit")]
 	public class Cell : ICloneable
 	{
+		#region Method Selector Ids
+		
+		internal static class Selectors
+		{
+			static class controlView { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("controlView"); }
+			static class setControlView { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setControlView:"); }
+			
+			public static IntPtr ControlView { get { return controlView.SelectorHandle; } }
+			public static IntPtr SetControlView { get { return setControlView.SelectorHandle; } }
+		}
+		
+		#endregion
+		
 		#region Cache
 		
 		static readonly NativeObjectCache<Cell> cellList = new NativeObjectCache<Cell>(c => c.NativePointer);
@@ -59,6 +72,7 @@ namespace System.MacOS.AppKit
 		{
 			super.Class = ObjectiveC.GetNativeBaseClass(ObjectiveC.GetNativeClass(this.GetType(), true));
 			super.Receiver = retain ? ObjectiveC.RetainObject(nativePointer) : nativePointer;
+			cellList.RegisterObject(this);
 			OnCreated();
 		}
 		
@@ -80,6 +94,12 @@ namespace System.MacOS.AppKit
 				
 				return super.Receiver;
 			}
+		}
+		
+		public Control Control
+		{
+			// Here we use super.Receiver directly, as the value has to be directly fetched from the native NSCell anyway
+			get { return View.GetInstance(SafeNativeMethods.objc_msgSend(super.Receiver, Selectors.ControlView)) as Control; }
 		}
 		
 		public Menu Menu

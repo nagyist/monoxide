@@ -11,9 +11,9 @@ namespace System.MacOS.AppKit
 		[SelectorStubAttribute("clrCommand:")]
 		private static void HandleAction(IntPtr self, IntPtr _cmd, IntPtr sender)
 		{
-			Debug.Assert(self == sender);
+			Debug.Assert(SafeNativeMethods.objc_msgSend(self, Selectors.ControlView) == sender);
 			
-			var cell = GetInstance(sender) as ActionCell;
+			var cell = GetInstance(self) as ActionCell;
 			
 			if (cell == null) return;
 			
@@ -23,9 +23,9 @@ namespace System.MacOS.AppKit
 		[SelectorStubAttribute("validateItem:")]
 		private static bool ValidateItem(IntPtr self, IntPtr _cmd, IntPtr nativeControl)
 		{
-			Debug.Assert(self == nativeControl);
+			Debug.Assert(SafeNativeMethods.objc_msgSend(self, Selectors.ControlView) == nativeControl);
 			
-			var cell = GetInstance(nativeControl) as ActionCell;
+			var cell = GetInstance(self) as ActionCell;
 			
 			if (cell == null) return false;
 			

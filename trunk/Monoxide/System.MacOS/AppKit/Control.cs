@@ -89,40 +89,26 @@ namespace System.MacOS.AppKit
 		
 		private Command command;
 		private CommandTarget commandTarget;
-		private EventHandler action;
+		
+		public event EventHandler Action;
 		
 		public Control() { }
 		
 		internal override void OnCreated()
 		{
-			if (Cell == null)
+			var cell = Cell as ActionCell;
+			
+			if (cell == null)
 			{
 				SafeNativeMethods.objc_msgSend(NativePointer, CommonSelectors.SetTarget, NativePointer);
 				SafeNativeMethods.objc_msgSend(NativePointer, CommonSelectors.SetAction, CommonSelectors.ClrCommand);
 			}
+			else cell.Action += HandleCellAction;
 		}
 		
 		public Cell Cell { get { return GetCellInternal(); } }
 		
 		public Type CellType { get { return GetCellTypeInternal(); } }
-		
-		public event EventHandler Action
-		{
-			add
-			{
-				var cell = Cell as ActionCell;
-				
-				if (cell != null) cell.Action += value;
-				else action += value;
-			}
-			remove
-			{
-				var cell = Cell as ActionCell;
-				
-				if (cell != null) cell.Action -= value;
-				else action -= value;
-			}
-		}
 		
 		public Command Command
 		{
@@ -164,17 +150,16 @@ namespace System.MacOS.AppKit
 		
 		internal virtual Type GetCellTypeInternal() { return null; }
 		
-		private void HandleAction()
-		{
-			OnAction(EventArgs.Empty);
-		}
+		private void HandleAction() { OnAction(EventArgs.Empty); }
+		
+		private void HandleCellAction(object sender, EventArgs e) { OnAction(e); }
 		
 		protected virtual void OnAction(EventArgs e)
 		{
-			if (action != null)
-				action(this, e);
+			if (Action != null)
+				Action(this, e);
 			
-			if (Command != null)
+			if (!(Cell is ActionCell) && Command != null)
 			{
 				var target = CommandTarget ?? Application.Current.GetTargetForCommand(Command);
 				
