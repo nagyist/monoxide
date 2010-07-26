@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace System.MacOS.AppKit
 {
-	public sealed class Segment : ICloneable, INotifyPropertyChanged
+	public class Segment : ICloneable, INotifyPropertyChanged
 	{
 		private string label;
 		private string toolTip;
@@ -15,6 +15,7 @@ namespace System.MacOS.AppKit
 		private bool enabled = true;
 		private double width;
 		
+		public event EventHandler Click;
 		public event PropertyChangedEventHandler PropertyChanged;
 		
 		// TODO: Implement the command model here
@@ -110,6 +111,7 @@ namespace System.MacOS.AppKit
 				if (value != selected)
 				{
 					selected = value;
+					if (Cell != null) Cell.HandleSegmentSelectedChanged(this);
 					NotifyPropertyChanged("Selected");
 				}
 			}
@@ -123,7 +125,6 @@ namespace System.MacOS.AppKit
 				if (value != enabled)
 				{
 					enabled = value;
-					if (Cell != null) Cell.HandleSegmentSelectedChanged(this);
 					NotifyPropertyChanged("Enabled");
 				}
 			}
@@ -162,6 +163,20 @@ namespace System.MacOS.AppKit
 		{
 			if (PropertyChanged != null)
 				PropertyChanged(this, new PropertyChangedEventArgs(name));
+		}
+		
+		protected virtual void OnClick(EventArgs e)
+		{
+			if (Click != null)
+				Click(this, e);
+			
+			if (Command != null)
+			{
+				var target = CommandTarget ?? Application.Current.GetTargetForCommand(Command);
+				
+				if (target != null)
+					target.Execute(Command, this);
+			}
 		}
 		
 		public object Clone()

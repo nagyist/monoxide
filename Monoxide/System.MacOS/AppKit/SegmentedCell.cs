@@ -354,6 +354,11 @@ namespace System.MacOS.AppKit
 		
 		private void UpdateSelected(IntPtr index, Segment segment) { SafeNativeMethods.objc_msgSendSuper_set_Boolean(ref super, Selectors.SetSelectedForSegment, segment.Selected, index); }
 		
+		protected override void OnAction(EventArgs e)
+		{
+			base.OnAction(e);
+		}
+		
 		public override object Clone()
 		{
 			var clone = base.Clone() as SegmentedCell;
