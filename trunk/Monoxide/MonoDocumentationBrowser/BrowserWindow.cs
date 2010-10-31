@@ -26,8 +26,11 @@ namespace MonoDocumentationBrowser
 			webView = new WebView();
 			splitView = new SplitView()
 			{
-				Bounds = new Rectangle(0, Window.SmallBottomBarHeight, 480, 360 - Window.SmallBottomBarHeight),
-				LayoutOptions = LayoutOptions.Width | LayoutOptions.Height,
+				Margin = new Thickness(0, 0, 0, Window.SmallBottomBarHeight),
+				Width = double.NaN,
+				Height = double.NaN,
+				//Bounds = new Rectangle(0, Window.SmallBottomBarHeight, 480, 360 - Window.SmallBottomBarHeight),
+				//LayoutOptions = LayoutOptions.Width | LayoutOptions.Height,
 				Orientation = Orientation.Horizontal,
 				DividerStyle = DividerStyle.Thin,
 			};

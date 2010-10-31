@@ -20,6 +20,14 @@ namespace System.MacOS
 		private static HashSet<string> bridgeClassNames = new HashSet<string>();
 		private static AssemblyBuilder glueAssembly = CreateGlueAssembly();
 		private static ModuleBuilder glueModule = glueAssembly.DefineDynamicModule(GlueAssemblyName);
+		/// <summary>Keep a reference on the wrapper methods created for bridging.</summary>
+		/// <remarks>
+		/// Used only for 32 bit version as of now.
+		/// This will let the bridge convert floating point base data types between 32 and 64 bits.
+		/// Selectors are implemented in C# by following the 64 bit ABI (using double), but the data must be converted for using the 32 bit ABI.
+		/// Until Mono fully works in 64 bits on OSX, this will be needed.
+		/// </remarks>
+		private static List<MethodInfo> wrapperMethods = new List<MethodInfo>(2); // Create a very small array to begin with.
 		private static HashSet<Type> createdDelegateTypes = new HashSet<Type>();
 		/// <summary>Keeps a reference on marshaled delegates.</summary>
 		/// <remarks>
@@ -27,6 +35,13 @@ namespace System.MacOS
 		/// Here, the marshaled delegates should never be released, so we keep permanent references.
 		/// </remarks>
 		private static List<Delegate> boundDelegates = new List<Delegate>();
+		
+		private static MethodInfo rectangle32To64 = typeof(AppKit.RectangleF).GetMethod("op_Implicit", new [] { typeof(AppKit.RectangleF) });
+		private static MethodInfo rectangle64To32 = typeof(AppKit.RectangleF).GetMethod("op_Implicit", new [] { typeof(AppKit.Rectangle) });
+		private static MethodInfo point32To64 = typeof(AppKit.PointF).GetMethod("op_Implicit", new [] { typeof(AppKit.PointF) });
+		private static MethodInfo point64To32 = typeof(AppKit.PointF).GetMethod("op_Implicit", new [] { typeof(AppKit.Point) });
+		private static MethodInfo size32To64 = typeof(AppKit.SizeF).GetMethod("op_Implicit", new [] { typeof(AppKit.SizeF) });
+		private static MethodInfo size64To32 = typeof(AppKit.SizeF).GetMethod("op_Implicit", new [] { typeof(AppKit.Size) });
 		
 		[return: MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler), MarshalCookie = "a")]
 		private delegate string DescriptionDelegate(IntPtr self, IntPtr _cmd);
@@ -334,25 +349,30 @@ namespace System.MacOS
 		private static void AddMethod(IntPtr nativeClass, IntPtr selector, MethodInfo method, string signature)
 		{
 			Type delegateType = null;
-			var parameters = method.GetParameters();
 			
+			method = WrapMethod(method); // Wrap the method if necessary
+			
+			var parameters = method.GetParameters();
+
 			foreach (var type in createdDelegateTypes)
 			{
 				var invokeMethod = type.GetMethod("Invoke", BindingFlags.Public | BindingFlags.Instance);
 				
-				if (invokeMethod.ReturnType != method.ReturnType) continue;
+				if (invokeMethod.ReturnType != method.ReturnType) goto TryNextType;
 				
 				var invokeParameters = invokeMethod.GetParameters();
 				
-				if (invokeParameters.Length != parameters.Length) continue;
+				if (invokeParameters.Length != parameters.Length) goto TryNextType;
 				
 				for (int i = 0; i < invokeParameters.Length; i++)
 					if (invokeParameters[i].ParameterType != parameters[i].ParameterType)
-						continue;
+						goto TryNextType; // ≈ break + continue
 				
 				delegateType = type;
-				
 				break;
+				
+			TryNextType:
+				continue;
 			}
 			
 			if (delegateType == null)
@@ -480,9 +500,96 @@ namespace System.MacOS
 				createdDelegateTypes.Add(delegateType);
 			}
 			
-			var createdDelegate = Delegate.CreateDelegate(delegateType, method);
+			// Create the delegate from a DynamicMethod (for wrapper methods) or by the regular way (for standard methods)
+			var createdDelegate = method is DynamicMethod ? ((DynamicMethod)method).CreateDelegate(delegateType) : Delegate.CreateDelegate(delegateType, method);
 			boundDelegates.Add(createdDelegate); // Prevents the delegate from being garbage collected
 			SafeNativeMethods.class_addMethod(nativeClass, selector, createdDelegate, signature);
+		}
+		
+		/// <summary>Returns the 32 bits compatible type for the specified type.</summary>
+		/// <remarks></remarks>
+		/// <param name="type">The <see cref="Type"/> for which to find a compatible one.</param>
+		/// <returns>The compatible <see cref="Type"/>, which may be the same as the original one.</returns>
+		private static Type GetCompatibleType(Type type)
+		{
+			switch (type.FullName)
+			{
+				case "System.Double": return typeof(float);
+				case "System.MacOS.AppKit.Rectangle": return typeof(AppKit.RectangleF);
+				case "System.MacOS.AppKit.Point": return typeof(AppKit.PointF);
+				case "System.MacOS.AppKit.Size": return typeof(AppKit.SizeF);
+				default: return type;
+			}
+		}
+		
+		private static MethodInfo WrapMethod(MethodInfo method)
+		{
+			Type returnValueType;
+			bool needsWrapper;
+			
+			if (LP64) return method; // Do not wrap the method in 64 bits mode.
+			
+			needsWrapper = (returnValueType = GetCompatibleType(method.ReturnType)) != method.ReturnType;
+			
+			// Prospection only. Do not create a new parameter array now…
+			var originalParameters = method.GetParameters(); // We can't avoid this memory loss anyway
+			for (int i = 0; i < originalParameters.Length; i++)
+				needsWrapper = GetCompatibleType(originalParameters[i].ParameterType) != originalParameters[i].ParameterType || needsWrapper;
+			
+			// In most cases, we won't need a wrapper, and everything will stop there.
+			if (!needsWrapper) return method;
+			
+			// Create the new parameter type array
+			var newParameterTypes = new Type[originalParameters.Length];
+			for (int i = 0; i < originalParameters.Length; i++)
+				newParameterTypes[i] = GetCompatibleType(originalParameters[i].ParameterType);
+			
+			// Create the new method
+			var dynamicMethod = new DynamicMethod("Wrapper." + method.Name, returnValueType, newParameterTypes, method.DeclaringType, false);
+			var ilGenerator = dynamicMethod.GetILGenerator();
+			
+			dynamicMethod.DefineParameter(0, method.ReturnParameter.Attributes, method.ReturnParameter.Name);
+			
+			for (int i = 0; i < originalParameters.Length; i++)
+			{
+				var originalParameter = originalParameters[i];
+				var newType = newParameterTypes[i];
+				dynamicMethod.DefineParameter(i + 1, originalParameter.Attributes, originalParameter.Name);
+				
+				switch (i)
+				{
+					case 0: ilGenerator.Emit(OpCodes.Ldarg_0); break;
+					case 1: ilGenerator.Emit(OpCodes.Ldarg_1); break;
+					case 2: ilGenerator.Emit(OpCodes.Ldarg_2); break;
+					case 3: ilGenerator.Emit(OpCodes.Ldarg_3); break;
+					default:
+						if (i < 256) ilGenerator.Emit(OpCodes.Ldarg_S, (byte)i);
+						else ilGenerator.Emit(OpCodes.Ldarg, unchecked((short)i));
+						break;
+				}
+				if (newType == originalParameter.ParameterType) continue;
+				else if (newType == typeof(float)) ilGenerator.Emit(OpCodes.Conv_R8);
+				else if (newType == typeof(AppKit.RectangleF)) ilGenerator.Emit(OpCodes.Call, rectangle32To64);
+				else if (newType == typeof(AppKit.PointF)) ilGenerator.Emit(OpCodes.Call, point32To64);
+				else if (newType == typeof(AppKit.SizeF)) ilGenerator.Emit(OpCodes.Call, size32To64);
+				else throw new InvalidOperationException();
+			}
+			
+			ilGenerator.Emit(OpCodes.Call, method);
+			
+			if (returnValueType != method.ReturnType)
+			{
+				if (returnValueType == typeof(float)) ilGenerator.Emit(OpCodes.Conv_R4);
+				else if (returnValueType == typeof(AppKit.RectangleF)) ilGenerator.Emit(OpCodes.Call, rectangle64To32);
+				else if (returnValueType == typeof(AppKit.PointF)) ilGenerator.Emit(OpCodes.Call, point64To32);
+				else if (returnValueType == typeof(AppKit.SizeF)) ilGenerator.Emit(OpCodes.Call, size64To32);
+			}
+			
+			ilGenerator.Emit(OpCodes.Ret);
+
+			wrapperMethods.Add(dynamicMethod);
+			
+			return dynamicMethod;
 		}
 	}
 }

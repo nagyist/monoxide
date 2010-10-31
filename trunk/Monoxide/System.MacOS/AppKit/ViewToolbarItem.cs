@@ -26,6 +26,9 @@ namespace System.MacOS.AppKit
 			{
 				if (value != view)
 				{
+					if (value != null) value.Owner = this;
+					if (view != null) view.Owner = null;
+					
 					view = value;
 					
 					if (Created)
@@ -37,7 +40,9 @@ namespace System.MacOS.AppKit
 		public override object Clone()
 		{
 			var clone = base.Clone() as ViewToolbarItem;
-			
+
+			clone.view = null;
+
 			if (view != null) clone.View = view.Clone() as View;
 			
 			return clone;

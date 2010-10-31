@@ -1,12 +1,15 @@
 using System;
+using System.Windows.Markup;
 
 namespace System.MacOS.AppKit
 {
 	[NativeClass("NSScrollView", "AppKit")]
+	[ContentProperty("DocumentView")]
 	public class ScrollView : View
 	{
 		#region Method Selector Ids
-		
+
+		#warning Don't forget to remove "ScrollView.Selectors." prefix once dmcs is bugfixed !
 		static class Selectors
 		{
 			static class documentView { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("documentView"); }
@@ -34,7 +37,7 @@ namespace System.MacOS.AppKit
 			static class rulersVisible { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("rulersVisible"); }
 			static class setRulersVisible { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setRulersVisible:"); }
 			
-			public static IntPtr DocumentView { get { return documentView.SelectorHandle; } }
+			public static IntPtr DocumentView { get { return ScrollView.Selectors.documentView.SelectorHandle; } }
 			public static IntPtr SetDocumentView { get { return setDocumentView.SelectorHandle; } }
 			
 			public static IntPtr HorizontalScroller { get { return horizontalScroller.SelectorHandle; } }
@@ -83,6 +86,9 @@ namespace System.MacOS.AppKit
 			{
 				if (value != documentView)
 				{
+					if (value != null) value.Owner = this;
+					if (documentView != null) documentView.Owner = null;
+
 					documentView = value;
 					
 					if (Created)

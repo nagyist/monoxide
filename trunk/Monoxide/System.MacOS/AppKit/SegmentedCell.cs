@@ -152,7 +152,7 @@ namespace System.MacOS.AppKit
 		
 		#region Method Selector Ids
 		
-		internal static class Selectors
+		internal static new class Selectors
 		{
 			private static class setTrackingMode { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setTrackingMode:"); }
 			private static class setSegmentStyle { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setSegmentStyle:"); }

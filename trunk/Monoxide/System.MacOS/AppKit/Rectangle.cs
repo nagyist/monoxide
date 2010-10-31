@@ -2,7 +2,7 @@ using System;
 
 namespace System.MacOS.AppKit
 {
-	public struct Rectangle
+	public struct Rectangle : IEquatable<Rectangle>
 	{
 		public static readonly Rectangle Zero = new Rectangle();
 		
@@ -25,6 +25,31 @@ namespace System.MacOS.AppKit
 		public double Top { get { return Location.Y; } }
 		public double Width { get { return Size.Width; } }
 		public double Height { get { return Size.Height; } }
+
+		public bool Equals(Rectangle other)
+		{
+			return other.Location == Location && other.Size == Size;
+		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is Rectangle ? Equals((Rectangle)obj) : base.Equals(obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return Location.GetHashCode() ^ Size.GetHashCode();
+		}
+
+		public static bool operator ==(Rectangle a, Rectangle b)
+		{
+			return a.Location == b.Location && a.Size == b.Size;
+		}
+
+		public static bool operator !=(Rectangle a, Rectangle b)
+		{
+			return a.Size != b.Size || a.Location != b.Location;
+		}
 	}
 	
 	internal struct RectangleF
@@ -42,10 +67,7 @@ namespace System.MacOS.AppKit
 			Height = (float)rectangle.Height;
 		}
 		
-		public static implicit operator Rectangle(RectangleF rectangle)
-		{
-			return new Rectangle(rectangle.Left, rectangle.Top, rectangle.Width, rectangle.Height);
-		}
+		public static implicit operator Rectangle(RectangleF rectangle) { return new Rectangle(rectangle.Left, rectangle.Top, rectangle.Width, rectangle.Height); }
 		
 		public static implicit operator RectangleF(Rectangle rectangle) { return new RectangleF(rectangle); }
 	}

@@ -6,8 +6,9 @@ namespace System.MacOS.AppKit
 	public class ButtonCell : ActionCell
 	{
 		#region Method Selector Ids
-		
-		internal static class Selectors
+
+		#warning Don't forget to remove "ButtonCell.Selectors." prefix once dmcs is bugfixed !
+		internal static new class Selectors
 		{
 			static class bezelStyle { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("bezelStyle"); }
 			static class setBezelStyle { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setBezelStyle:"); }
@@ -16,9 +17,9 @@ namespace System.MacOS.AppKit
 			static class state { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("state"); }
 			static class setState { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setState:"); }
 			
-			public static IntPtr BezelStyle { get { return bezelStyle.SelectorHandle; } }
+			public static IntPtr BezelStyle { get { return ButtonCell.Selectors.bezelStyle.SelectorHandle; } }
 			public static IntPtr SetBezelStyle { get { return setBezelStyle.SelectorHandle; } }
-			public static IntPtr ButtonType { get { return buttonType.SelectorHandle; } }
+			public static IntPtr ButtonType { get { return ButtonCell.Selectors.buttonType.SelectorHandle; } }
 			public static IntPtr SetButtonType { get { return setButtonType.SelectorHandle; } }
 			public static IntPtr State { get { return state.SelectorHandle; } }
 			public static IntPtr SetState { get { return setState.SelectorHandle; } }

@@ -286,15 +286,27 @@ namespace System.MacOS
 		[DllImport("libobjc", EntryPoint = "objc_msgSend_stret")]
 		[SuppressUnmanagedCodeSecurity]
 		public static extern AppKit.RectangleF objc_msgSend_get_Rectangle_32(IntPtr self, IntPtr sel);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper_stret")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern AppKit.RectangleF objc_msgSendSuper_get_Rectangle_32(ref objc_super super, IntPtr sel);
 		[DllImport("libobjc", EntryPoint = "objc_msgSend_stret")]
 		[SuppressUnmanagedCodeSecurity]
 		public static extern AppKit.Rectangle objc_msgSend_get_Rectangle_64(IntPtr self, IntPtr sel);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper_stret")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern AppKit.Rectangle objc_msgSendSuper_get_Rectangle_64(ref objc_super super, IntPtr sel);
 		[DllImport("libobjc", EntryPoint = "objc_msgSend")]
 		[SuppressUnmanagedCodeSecurity]
 		public static extern void objc_msgSend_set_Rectangle_32(IntPtr self, IntPtr sel, AppKit.RectangleF rect);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern void objc_msgSendSuper_set_Rectangle_32(ref objc_super super, IntPtr sel, AppKit.RectangleF rect);
 		[DllImport("libobjc", EntryPoint = "objc_msgSend")]
 		[SuppressUnmanagedCodeSecurity]
 		public static extern void objc_msgSend_set_Rectangle_64(IntPtr self, IntPtr sel, AppKit.Rectangle rect);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern void objc_msgSendSuper_set_Rectangle_64(ref objc_super super, IntPtr sel, AppKit.Rectangle rect);
 		
 		#endregion
 		

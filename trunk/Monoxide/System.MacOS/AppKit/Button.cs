@@ -12,7 +12,9 @@ namespace System.MacOS.AppKit
 	{
 		public Button()
 		{
-			Bounds = new Rectangle(0, 0, 100, 32);
+			//Bounds = new Rectangle(0, 0, 100, 32);
+			Width = 100;
+			Height = 32;
 		}
 		
 		public string Title

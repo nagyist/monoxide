@@ -163,7 +163,7 @@ namespace System.MacOS.AppKit
 		
 		#endregion
 		
-		//~MenuItem() { Dispose(false); } // SHould not be needed anymore
+		//~MenuItem() { Dispose(false); } // Should not be needed anymore
 		
 		protected override void Dispose(bool disposing)
 		{

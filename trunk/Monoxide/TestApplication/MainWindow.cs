@@ -17,24 +17,24 @@ namespace TestApplication
 			CreateToolbarTemplate();
 			Style |= WindowStyle.UnifiedTitleAndToolbar;
 			Toolbar = new Toolbar() { TemplateName = "Main", Customizable = true };
-			button1 = new Button() { Title = "Click me \u263A", Bounds = new Rectangle(180, 0, 100, 32), LayoutOptions = LayoutOptions.Top | LayoutOptions.Left };
+			button1 = new Button() { Title = "Click me \u263A", Width = 100, Margin = new Thickness(double.NaN, double.NaN, 200, 0) };
 			button1.Action += HandleButton1Action;
-			button2 = new Button() { Title = "\u26A0 Don't click me \u2620", Bounds = new Rectangle(280, 0, 200, 32), LayoutOptions = LayoutOptions.Top | LayoutOptions.Left };
+			button2 = new Button() { Title = "\u26A0 Don't click me \u2620", Width = 200, Margin = new Thickness(double.NaN, double.NaN, 0, 0) };
 			button2.Action += HandleButton2Action;
-			checkBox = new Button() { Title = "Closable", ButtonType = ButtonType.Switch, Bounds = new Rectangle(110, 100, 100, 24)};
-			webView = new WebView() { Bounds = new Rectangle(0, 160, 480, 140), LayoutOptions = LayoutOptions.Width | LayoutOptions.Height };
+			checkBox = new Button() { Title = "Closable", ButtonType = ButtonType.Switch, Width = 100, Height = 24, Margin = new Thickness(110, double.NaN, double.NaN, 100) };
+			webView = new WebView() { Margin = new Thickness(0, 0, 0, 160) };
 #if DOCUMENT
-			checkBox.Checked = true;
+//			checkBox.Checked = true;
 #endif
 			Title = "Hello From C#";
 			Content.Children.Add(button1);
 			Content.Children.Add(button2);
 			Content.Children.Add(checkBox);
-			Content.Children.Add(new ColorWell() { Bounds = new Rectangle(0, 32, 100, 100) });
-			Content.Children.Add(new ColorWell() { Bounds = new Rectangle(200, 32, 100, 100) });
-			Content.Children.Add(new SearchField() { Bounds = new Rectangle(100, 32, 100, 22) });
-			Content.Children.Add(new TextField() { Bounds = new Rectangle(100, 64, 100, 22) });
-			Content.Children.Add(new ComboBox() { Bounds = new Rectangle(10, 132, 280, 22) });
+			Content.Children.Add(new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(0, double.NaN, double.NaN, 32) });
+			Content.Children.Add(new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(200, double.NaN, double.NaN, 32) });
+			Content.Children.Add(new SearchField() { Width = 100, Height = 22, Margin = new Thickness(100, double.NaN, double.NaN, 32) });
+			Content.Children.Add(new TextField() { Width = 100, Height = 22, Margin = new Thickness(100, double.NaN, double.NaN, 64) });
+			Content.Children.Add(new ComboBox() { Width = 280, Height = 22, Margin = new Thickness(10, double.NaN, double.NaN, 132) });
 			Content.Children.Add(webView);
 		}
 		

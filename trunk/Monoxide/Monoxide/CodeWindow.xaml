@@ -1,0 +1,7 @@
+<Window x:Class="Monoxide.CodeWindow"
+	xmlns="clr-namespace:System.MacOS.AppKit; assembly=System.MacOS"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:Monoxide;assembly=Monoxide">
+	<TextView x:Name="textView">
+	</TextView>
+</Window>
