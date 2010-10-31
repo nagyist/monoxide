@@ -50,7 +50,7 @@ namespace System.MacOS.AppKit
 			ilGenerator.Emit(OpCodes.Isinst, targetMethod.DeclaringType);
 			ilGenerator.Emit(OpCodes.Ldarg_1);
 			ilGenerator.Emit(OpCodes.Tailcall);
-			ilGenerator.EmitCall(OpCodes.Callvirt, targetMethod, null); // callvirt will check for null references
+			ilGenerator.Emit(OpCodes.Callvirt, targetMethod); // callvirt will check for null references
 			ilGenerator.Emit(OpCodes.Ret);
 			
 			return method.CreateDelegate(typeof(CommandInvocationDelegate)) as CommandInvocationDelegate;

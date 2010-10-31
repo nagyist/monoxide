@@ -8,7 +8,8 @@ namespace System.MacOS.AppKit
 	public class ToolbarItem : ICommandItem, ICloneable, IDisposable
 	{
 		#region Selectors
-		
+
+		#warning Don't forget to remove "ToolbarItem.Selectors." prefix once dmcs is bugfixed !
 		internal static class Selectors
 		{
 			static class initWithItemIdentifier { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("initWithItemIdentifier:"); }
@@ -24,10 +25,10 @@ namespace System.MacOS.AppKit
 			
 			public static IntPtr InitWithItemIdentifier { get { return initWithItemIdentifier.SelectorHandle; } }
 			
-			public static IntPtr Label { get { return label.SelectorHandle; } }
+			public static IntPtr Label { get { return ToolbarItem.Selectors.label.SelectorHandle; } }
 			public static IntPtr SetLabel { get { return setLabel.SelectorHandle; } }
 			
-			public static IntPtr PaletteLabel { get { return paletteLabel.SelectorHandle; } }
+			public static IntPtr PaletteLabel { get { return ToolbarItem.Selectors.paletteLabel.SelectorHandle; } }
 			public static IntPtr SetPaletteLabel { get { return setPaletteLabel.SelectorHandle; } }
 			
 			public static IntPtr View { get { return view.SelectorHandle; } }

@@ -17,7 +17,8 @@ namespace System.MacOS.WebKit
 		static extern IntPtr objc_msgSend_initWithFrame_frameName_groupName_64(IntPtr self, IntPtr sel, Rectangle frame, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string frameName, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string groupName);
 		
 		#region Method Selector Ids
-		
+
+		#warning Don't forget to remove "WebView.Selectors." prefix once dmcs is bugfixed !
 		static class Selectors
 		{
 			static class initWithFrameFrameNameGroupName { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("initWithFrame:frameName:groupName:"); }
@@ -26,7 +27,7 @@ namespace System.MacOS.WebKit
 			
 			public static IntPtr InitWithFrameFrameNameGroupName { get { return initWithFrameFrameNameGroupName.SelectorHandle; } }
 			public static IntPtr SetMainFrameURL { get { return setMainFrameURL.SelectorHandle; } }
-			public static IntPtr MainFrame { get { return mainFrame.SelectorHandle; } }
+			public static IntPtr MainFrame { get { return WebView.Selectors.mainFrame.SelectorHandle; } }
 		}
 		
 		#endregion
@@ -48,7 +49,7 @@ namespace System.MacOS.WebKit
 		
 		internal override void InitializeNative(ref IntPtr nativePointer)
 		{
-			InitWithFrameFrameNameGroupName(ref nativePointer, Bounds, frameName, null);
+			InitWithFrameFrameNameGroupName(ref nativePointer, Frame, frameName, null);
 		}
 		
 		private static void InitWithFrameFrameNameGroupName(ref IntPtr nativePointer, Rectangle bounds, string frameName, string groupName)

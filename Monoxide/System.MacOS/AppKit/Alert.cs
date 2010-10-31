@@ -6,7 +6,8 @@ namespace System.MacOS.AppKit
 	public sealed class Alert : IDisposable
 	{
 		#region Method Selector Ids
-		
+
+		#warning Don't forget to remove "Alert.Selectors." prefix once dmcs is bugfixed !
 		static class Selectors
 		{
 			static class alertStyle { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("alertStyle"); }
@@ -27,20 +28,20 @@ namespace System.MacOS.AppKit
 			
 			static class addButtonWithTitle { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("addButtonWithTitle:"); }
 			static class runModal { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("runModal"); }
-			
-			public static IntPtr AlertStyle { get { return alertStyle.SelectorHandle; } }
+
+			public static IntPtr AlertStyle { get { return Alert.Selectors.alertStyle.SelectorHandle; } }
 			public static IntPtr SetAlertStyle { get { return setAlertStyle.SelectorHandle; } }
 			public static IntPtr ShowsHelp { get { return showsHelp.SelectorHandle; } }
 			public static IntPtr SetShowsHelp { get { return setShowsHelp.SelectorHandle; } }
 			public static IntPtr ShowsSuppressionButton { get { return showsSuppressionButton.SelectorHandle; } }
 			public static IntPtr SetShowsSuppressionButton { get { return setShowsSuppressionButton.SelectorHandle; } }
-			public static IntPtr InformativeText { get { return informativeText.SelectorHandle; } }
+			public static IntPtr InformativeText { get { return Alert.Selectors.informativeText.SelectorHandle; } }
 			public static IntPtr SetInformativeText { get { return setInformativeText.SelectorHandle; } }
-			public static IntPtr MessageText { get { return messageText.SelectorHandle; } }
+			public static IntPtr MessageText { get { return Alert.Selectors.messageText.SelectorHandle; } }
 			public static IntPtr SetMessageText { get { return setMessageText.SelectorHandle; } }
-			public static IntPtr Icon { get { return icon.SelectorHandle; } }
+			public static IntPtr Icon { get { return Alert.Selectors.icon.SelectorHandle; } }
 			public static IntPtr SetIcon { get { return setIcon.SelectorHandle; } }
-			public static IntPtr AccessoryView { get { return accessoryView.SelectorHandle; } }
+			public static IntPtr AccessoryView { get { return Alert.Selectors.accessoryView.SelectorHandle; } }
 			public static IntPtr SetAccessoryView { get { return setAccessoryView.SelectorHandle; } }
 			public static IntPtr SuppressionButton { get { return suppressionButton.SelectorHandle; } }
 			

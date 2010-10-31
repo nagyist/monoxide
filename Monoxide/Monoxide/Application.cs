@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.MacOS.AppKit;
+using System.Xaml;
 using NSApplication = System.MacOS.AppKit.Application;
 
 namespace Monoxide
@@ -14,7 +15,8 @@ namespace Monoxide
 
 		protected override void OnNewFile(EventArgs e)
 		{
-			new CodeWindow().Show();
+			//new CodeWindow().Show();
+			(XamlServices.Load("CodeWindow.xaml") as CodeWindow).Show();
 		}
 	}
 }

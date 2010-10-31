@@ -12,7 +12,9 @@ namespace System.MacOS.AppKit
 	{
 		public SegmentedControl()
 		{
-			Bounds = new Rectangle(0, 0, 60, 24);
+			//Bounds = new Rectangle(0, 0, 60, 24);
+			Width = 60;
+			Height = 24;
 		}
 		
 		public SegmentedCell.SegmentCollection Segments { get { return Cell.Segments; } }

@@ -6,7 +6,8 @@ namespace System.MacOS.AppKit
 	public class SplitView : View
 	{
 		#region Method Selector Ids
-		
+
+		#warning Don't forget to remove "SplitView.Selectors." prefix once dmcs is bugfixed !
 		static class Selectors
 		{
 			static class isVertical { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("isVertical"); }
@@ -18,7 +19,7 @@ namespace System.MacOS.AppKit
 			
 			public static IntPtr IsVertical { get { return isVertical.SelectorHandle; } }
 			public static IntPtr SetVertical { get { return setVertical.SelectorHandle; } }
-			public static IntPtr DividerStyle { get { return dividerStyle.SelectorHandle; } }
+			public static IntPtr DividerStyle { get { return SplitView.Selectors.dividerStyle.SelectorHandle; } }
 			public static IntPtr SetDividerStyle { get { return setDividerStyle.SelectorHandle; } }
 			public static IntPtr DividerThickness { get { return dividerThickness.SelectorHandle; } }
 			public static IntPtr SetDividerThickness { get { return setDividerThickness.SelectorHandle; } }

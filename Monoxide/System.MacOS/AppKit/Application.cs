@@ -114,8 +114,8 @@ namespace System.MacOS.AppKit
 		
 		private static int ShowExceptionPanel(Exception exception)
 		{
-			using (var textView = new TextView() { Editable = true, Bounds = new Rectangle(0, 0, 400, 200) })
-				using (var accessoryView = new ScrollView { DocumentView = textView, Scrollers = Axis.Both, Bounds = new Rectangle(0, 0, 400, 200) })
+			using (var textView = new TextView() { Editable = true, Margin = new Thickness(0), MinHeight = 400 })
+				using (var accessoryView = new ScrollView { DocumentView = textView, Scrollers = Axis.Both, Margin = new Thickness(0), Width = 400, Height = 200 })
 					using (var alert = new Alert())
 					{
 						alert.Style = AlertStyle.Warning;
@@ -131,7 +131,7 @@ namespace System.MacOS.AppKit
 		[SelectorStub("run")]
 		private static void Run(IntPtr self, IntPtr _cmd)
 		{
-			// I don't think CS0219 here is normal behavior here, and the code is working as intended, so I disable the warning.
+			// Warning CS0219 is irrelevant here.
 			#pragma warning disable 219
 			LocalAutoReleasePool pool;
 			#pragma warning restore 219

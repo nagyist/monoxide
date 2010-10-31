@@ -13,7 +13,7 @@ namespace System.MacOS
 			
 			@this.nativePointer = ObjectiveC.AllocAndInitObject(ObjectiveC.Classes.NSAutoreleasePool);
 #if DEBUG && VERBOSE
-			Debug.WriteLine("Local NSAutoReleasePool created: " + pool.nativePointer.ToString("X16"));
+			Debug.WriteLine("Local NSAutoReleasePool created: " + @this.nativePointer.ToString("X16"));
 #endif
 			
 			return @this;

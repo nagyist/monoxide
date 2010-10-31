@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>System.MacOS</RootNamespace>
     <AssemblyName>System.MacOS</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\System.MacOS.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ObjectiveC.cs" />
@@ -86,7 +87,6 @@
     <Compile Include="AppKit\ComboBox.cs" />
     <Compile Include="WebKit\WebView.cs" />
     <Compile Include="AppKit\Browser.cs" />
-    <Compile Include="AppKit\LayoutOptions.cs" />
     <Compile Include="WebKit\WebFrame.cs" />
     <Compile Include="AppKit\ApplicationNotRunningException.cs" />
     <Compile Include="NativeUrlMarshaler.cs" />
@@ -121,7 +121,6 @@
     <Compile Include="AppKit\ToolbarDisplayStyle.cs" />
     <Compile Include="AppKit\Image.cs" />
     <Compile Include="AppKit\MenuItemKind.cs" />
-    <Compile Include="CoreFoundation\Locale.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="AppKit\ToolbarItem.cs" />
     <Compile Include="AppKit\ToolbarTemplate.cs" />
@@ -147,6 +146,8 @@
     <Compile Include="AppKit\ItemSelectionMode.cs" />
     <Compile Include="AppKit\TableHeaderCell.cs" />
     <Compile Include="AppKit\ColumnSizeMode.cs" />
+    <Compile Include="CoreFoundation\Locale.cs" />
+    <Compile Include="AppKit\Thickness.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AppKit\Commands.fr.resx" />

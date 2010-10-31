@@ -3,14 +3,17 @@ using System.Security;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Windows.Markup;
 
 namespace System.MacOS.AppKit
 {
 	[NativeClass("NSWindow", "AppKit")]
+	[ContentProperty("Content")]
 	public class Window : EventTarget
 	{
 		#region Method Selector Ids
-		
+
+		#warning Don't forget to remove "Window.Selectors." prefix once dmcs is bugfixed !
 		static class Selectors
 		{
 			static class initWithContentRect_styleMask_backing_defer { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("initWithContentRect:styleMask:backing:defer:"); }
@@ -22,6 +25,8 @@ namespace System.MacOS.AppKit
 			static class close { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("close"); }
 			static class contentView { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("contentView"); }
 			static class setContentView { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setContentView:"); }
+			static class contentSize { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("contentSize"); }
+			static class setContentSize { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setContentSize:"); }
 			static class styleMask { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("styleMask"); }
 			static class setStyleMask { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setStyleMask:"); }
 			static class toolbar { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("toolbar"); }
@@ -40,13 +45,16 @@ namespace System.MacOS.AppKit
 			
 			public static IntPtr Close { get { return close.SelectorHandle; } }
 			
-			public static IntPtr ContentView { get { return contentView.SelectorHandle; } }
+			public static IntPtr ContentView { get { return Window.Selectors.contentView.SelectorHandle; } }
 			public static IntPtr SetContentView { get { return setContentView.SelectorHandle; } }
+
+			public static IntPtr ContentSize { get { return contentSize.SelectorHandle; } }
+			public static IntPtr SetContentSize { get { return setContentSize.SelectorHandle; } }
 			
 			public static IntPtr StyleMask { get { return styleMask.SelectorHandle; } }
 			public static IntPtr SetStyleMask { get { return setStyleMask.SelectorHandle; } }
 			
-			public static IntPtr Toolbar { get { return toolbar.SelectorHandle; } }
+			public static IntPtr Toolbar { get { return Window.Selectors.toolbar.SelectorHandle; } }
 			public static IntPtr SetToolbar { get { return setToolbar.SelectorHandle; } }
 			
 			public static IntPtr ContentBorderThicknessForEdge { get { return contentBorderThicknessForEdge.SelectorHandle; } }
@@ -196,7 +204,9 @@ namespace System.MacOS.AppKit
 		
 		public Window()
 		{
-			contentView = new View() { Bounds = new Rectangle(0, 0, 480, 360) };
+			#warning Lazy content view creation might be a good idea
+			contentView = new View() { Width = 480, Height = 360 };
+			contentView.Owner = this;
 			style = WindowStyle.Titled | WindowStyle.Resizable | WindowStyle.Closable | WindowStyle.Miniaturizable;
 			clientRectangle = new Rectangle(335, 390, 480, 360);
 			disposeWhenClosed = true;
@@ -339,7 +349,7 @@ namespace System.MacOS.AppKit
 				}
 			}
 		}
-		
+
 		public View Content
 		{
 			get { return contentView; }
@@ -347,7 +357,14 @@ namespace System.MacOS.AppKit
 			{
 				if (value != contentView)
 				{
-					contentView = value ?? new View();
+					var newContentView = value ?? new View();
+
+					// Take ownership of the new content view, and free the old one
+					newContentView.Owner = this; // This may fail if the view is already owned somewhere else
+					contentView.Owner = false;
+
+					// Assign the view now that everything is ok
+					contentView = newContentView;
 					
 					if (Created)
 						SafeNativeMethods.objc_msgSend(super.Receiver, Selectors.SetContentView, contentView.NativePointer);
