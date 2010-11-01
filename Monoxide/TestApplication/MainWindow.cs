@@ -30,11 +30,11 @@ namespace TestApplication
 			Content.Children.Add(button1);
 			Content.Children.Add(button2);
 			Content.Children.Add(checkBox);
-			Content.Children.Add(new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(0, double.NaN, double.NaN, 32) });
-			Content.Children.Add(new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(200, double.NaN, double.NaN, 32) });
-			Content.Children.Add(new SearchField() { Width = 100, Height = 22, Margin = new Thickness(100, double.NaN, double.NaN, 32) });
-			Content.Children.Add(new TextField() { Width = 100, Height = 22, Margin = new Thickness(100, double.NaN, double.NaN, 64) });
-			Content.Children.Add(new ComboBox() { Width = 280, Height = 22, Margin = new Thickness(10, double.NaN, double.NaN, 132) });
+			Content.Children.Add(new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(10, double.NaN, double.NaN, 32) });
+			Content.Children.Add(new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(double.NaN, double.NaN, 10, 32) });
+			Content.Children.Add(new SearchField() { Width = double.NaN, Height = 22, Margin = new Thickness(120, double.NaN, 120, 32) });
+			Content.Children.Add(new TextField() { Width = double.NaN, Height = 22, Margin = new Thickness(120, double.NaN, 120, 64) });
+			Content.Children.Add(new ComboBox() { Width = double.NaN, Height = 22, Margin = new Thickness(10, double.NaN, 10, 132) });
 			Content.Children.Add(webView);
 		}
 		

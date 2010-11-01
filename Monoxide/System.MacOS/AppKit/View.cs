@@ -2,6 +2,7 @@ using System;
 using System.Security;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace System.MacOS.AppKit
 {
@@ -77,15 +78,23 @@ namespace System.MacOS.AppKit
 		static extern IntPtr objc_msgSend_initWithFrame_64(IntPtr self, IntPtr sel, Rectangle frame);
 		
 		[SelectorStub("resizeSubviewsWithOldSize:")]
-		static void ArrangeChildrenInternal(IntPtr self, IntPtr sel, Size oldSize)
+		static void ResizeSubviewsWithOldSize(IntPtr self, IntPtr sel, Size oldSize)
 		{
 			var view = GetInstance(self);
 
-			if (view != null) view.ArrangeChildren();
+			// Special case for the WebView, which needs to manages its own native subviews the way it wants
+			if (view is WebKit.WebView)
+			{
+				if (ObjectiveC.LP64)
+					SafeNativeMethods.objc_msgSendSuper_set_Size_64(ref view.super, Selectors.ResizeSubviewsWithOldSize, oldSize);
+				else
+					SafeNativeMethods.objc_msgSendSuper_set_Size_32(ref view.super, Selectors.ResizeSubviewsWithOldSize, oldSize);
+			}
+			else view.ArrangeChildren();
 		}
 
 		[SelectorStub("resizeWithOldSuperviewSize:")]
-		static void AdjustSize(IntPtr self, IntPtr sel, Size size)
+		static void ResizeWithOldSuperviewSize(IntPtr self, IntPtr sel, Size size)
 		{
 			var view = GetInstance(self);
 
@@ -93,14 +102,16 @@ namespace System.MacOS.AppKit
 		}
 		
 		[SelectorStub("setFrame:")]
-		static void SetFrameInternal(IntPtr self, IntPtr sel, Rectangle frameRect)
+		static void SetFrame(IntPtr self, IntPtr sel, Rectangle frameRect)
 		{
 			var view = GetInstance(self);
 
-			// While resizing, NSWindow will call this method on its content view.
-			// Thus, when the owner is a window, this method is the best way to detect a frame resize.
-			// Detecting such a situation is needed for making the managed layout engine coherent.
-			if (view != null && !(view.owner is View))
+			// Windows, Toolbars and such all have internal views for placing our more regular views.
+			// These views can be accessed, but since it's part of the private interface, it is better not to.
+			// Here, we can track changes to the frame when the view is used outside of the public view hierarchy.
+			// Anyway, the goal is to manage [almost] all of the layout in managed code, so this implementation
+			// effectively helps in ignoring external (non-managed) changes to the frame.
+			if (!(view.owner is View))
 			{
 				view.margin = new Thickness(frameRect.Left, 0, 0, frameRect.Top);
 				view.width = frameRect.Width;
@@ -108,6 +119,29 @@ namespace System.MacOS.AppKit
 
 				view.Arrange();
 			}
+			else Debug.WriteLine("Ignored NSView -setFrame: for View of type {0}", view.GetType());
+		}
+
+		[SelectorStub("setFrameSize:")]
+		static void SetFrameSize(IntPtr self, IntPtr sel, Size frameSize)
+		{
+			var view = GetInstance(self);
+
+			// While resizing, NSWindow will call this method on its content view.
+			// Thus, when the owner is a window, this method is the best way to detect a frame resize.
+			// Detecting such a situation is needed for making the managed layout engine coherent.
+			// (Note that just in case, the code for setFrame will also work correctly if it was ever to be called in place of setFrameSize)
+			if (view.Owner is Window)
+			{
+				view.frame.Size = frameSize;
+				view.width = frameSize.Width;
+				view.height = frameSize.Height;
+			}
+			// setFrameSize: will be called internally by setFrame: (as it seems), so we need to call the base implementation
+			if (ObjectiveC.LP64)
+				SafeNativeMethods.objc_msgSendSuper_set_Size_64(ref view.super, Selectors.SetFrameSize, frameSize);
+			else
+				SafeNativeMethods.objc_msgSendSuper_set_Size_32(ref view.super, Selectors.SetFrameSize, frameSize);
 		}
 		
 		#region Method Selector Ids
@@ -116,19 +150,27 @@ namespace System.MacOS.AppKit
 		static class Selectors
 		{
 			static class initWithFrame { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("initWithFrame:"); }
-			static class frame { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("frame"); }
+			//static class frame { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("frame"); }
 			static class setFrame { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setFrame:"); }
-			static class autoresizingMask { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("autoresizingMask"); }
-			static class setAutoresizingMask { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setAutoresizingMask:"); }
+			static class setFrameOrigin { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setFrameOrigin:"); }
+			static class setFrameSize { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setFrameSize:"); }
+			static class autoresizesSubviews { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("autoresizesSubviews"); }
+			static class setAutoresizesSubviews { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setAutoresizesSubviews:"); }
+			//static class autoresizingMask { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("autoresizingMask"); }
+			//static class setAutoresizingMask { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setAutoresizingMask:"); }
 			static class addSubview { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("addSubview:"); }
 			static class resizeSubviewsWithOldSize { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("resizeSubviewsWithOldSize:"); }
 			static class resizeWithOldSuperviewSize { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("resizeWithOldSuperviewSize:"); }
 			
 			public static IntPtr InitWithFrame { get { return initWithFrame.SelectorHandle; } }
-			public static IntPtr Frame { get { return View.Selectors.frame.SelectorHandle; } }
+			//public static IntPtr Frame { get { return View.Selectors.frame.SelectorHandle; } }
 			public static IntPtr SetFrame { get { return setFrame.SelectorHandle; } }
-			public static IntPtr AutoresizingMask { get { return autoresizingMask.SelectorHandle; } }
-			public static IntPtr SetAutoresizingMask { get { return setAutoresizingMask.SelectorHandle; } }
+			public static IntPtr SetFrameOrigin { get { return setFrameOrigin.SelectorHandle; } }
+			public static IntPtr SetFrameSize { get { return setFrameSize.SelectorHandle; } }
+			public static IntPtr AutoresizesSubviews { get { return autoresizesSubviews.SelectorHandle; } }
+			public static IntPtr SetAutoresizesSubviews { get { return setAutoresizesSubviews.SelectorHandle; } }
+			//public static IntPtr AutoresizingMask { get { return autoresizingMask.SelectorHandle; } }
+			//public static IntPtr SetAutoresizingMask { get { return setAutoresizingMask.SelectorHandle; } }
 			public static IntPtr AddSubview { get { return addSubview.SelectorHandle; } }
 			public static IntPtr ResizeSubviewsWithOldSize { get { return resizeSubviewsWithOldSize.SelectorHandle; } }
 			public static IntPtr ResizeWithOldSuperviewSize { get { return resizeWithOldSuperviewSize.SelectorHandle; } }
@@ -191,6 +233,7 @@ namespace System.MacOS.AppKit
 				super.Receiver = nativePointer;
 				viewCache.RegisterObject(this);
 				//SafeNativeMethods.objc_msgSend(nativePointer, Selectors.SetAutoresizingMask, (IntPtr)autoResizingMask);
+				SafeNativeMethods.objc_msgSend_set_Boolean(nativePointer, Selectors.SetAutoresizesSubviews, true);
 				try { OnCreated(); }
 				catch // A fault handler would have been better…
 				{
@@ -326,6 +369,8 @@ namespace System.MacOS.AppKit
 				maxWidth = value;
 			}
 		}
+
+		public double ActualWidth { get { return frame.Width; } }
 		
 		public double Height
 		{
@@ -359,6 +404,8 @@ namespace System.MacOS.AppKit
 				maxHeight = value;
 			}
 		}
+
+		public double ActualHeight { get { return frame.Height; } }
 		
 		#endregion
 

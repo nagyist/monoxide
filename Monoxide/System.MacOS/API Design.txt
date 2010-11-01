@@ -1,0 +1,75 @@
+Here are some notes on how to design the API/Framework.
+
+1.  Auto-release pools
+    NSAutoReleasePool functionality is exposed via the AutoReleasePool public class, and the LocalAutoReleasePool internal
+    struct. The struct version is lighter in memory usage (it is basically just an IntPtr), but is not safe to use, as it is
+    easy to leak memory by forgetting to call Dispose().
+    Forgetting to release an auto-release pool can have severe consequences (severe memory leaks ;) ) on an application.
+    Thus, the "potentially leaking" struct is not publicly exposed.
+    However, since the struct is much lighter to use, one should always use it in place of the class when writing code for
+    the library. Wrapping it in a using directive is safe and guaranteed to never leak:
+    
+        using (var pool = LocalAutoReleasePool.Create()) { }
+    
+2.  Native objects
+    Native Objective-C objects all derive from NSObject and possess methods that you can call at your own will.
+    Frequently, it will be necessary to expose the functionality of a native Objective-C class in the library. In this case,
+    native instances of the class should be wrapped in a CLR class implementing IDisposable along with the full Dispose
+    pattern. The wrapping class should expose a public property named IsDisposed informing the user on the 'disposed' status.
+    Also, the native object pointer should never be publicly exposed, but should be exposed by an internal property named
+    NativePointer. This property will be used for internal communication between objects in the library.
+    A template for such an object is provided in NativeObject.cs.
+    
+3.  Delay-created native objects
+    Sometimes, an object need not to be created at the same time as its wrapper is instantiated. In this case, the object
+    should be created at the last moment, typically (and only) when getting the NativePointer property.
+    An internal property named IsCreated should be present to indicate the creation state of the native object.
+    And probably the most important rule, an user should have no direct mean to force the creation of an object before it
+    is needed. This means, that getting or setting a property should never cause the object to be created if it wasn't. Only
+    library code should be able to control object creation.
+    As an exemple, the Show method of the Window type, will cause creation of the native NSWindow object and the creation of
+    most (if not all) other not-yet-created native objects bound to it. Obviously, showing the window is the only place where
+    the creatin is explicitly needed.
+    Delay creatin, if well implemented, will help a lot with library performance, by letting the user build its [UI] object
+    model before instantiating it. Bu all of this will (and should always) be transparent.
+    A template for delay-created native objects is provided in DelayCreatedNativeObject.cs
+    
+4.  Native object caches
+    Very often, it will be needed to get a managed wrapper for a pre-existing native object, which will also very often have
+    been created by the library. A native object should never be wrapped by more than one managed object. Thus, the use of
+    native object caches is the best practice to follow. Caches should be private, and implemented on a (base) class basis.
+    Classes possessing a cache may expose an internal GetInstance method taking an IntPtr nativeObject as a parameter, in order
+    for other classes to get managed wrappers for objects of the wrapped native type.
+    Native object caches should be integrated smoothly with the creation-disposal mechanisms, typically adding the object to
+    the cache right after its creation, and removing it from the cache right before disposal (native object releasing).
+    
+5.  Application object
+    Some classes will require the NSApp object (class NSApplication) to be initialized before working correctly.
+    Such classes should be used along with the delayed creation mechanisms, and ensure that the application is initialized by
+    calling Application.Initialize() just (and only) before the native object creation (alloc + init).
+    It is desirable that the one to force NSApplication instantiation be the user, so NSApplication initialization should
+    only be forced when stricly needed. The NSWindow class is such a case.
+    Please remember that it should be possible to use the library to write utilities not relying on any NSApplication
+    functionality. That's also the reason for AutoReleasePool public exposition.
+    
+6.  Choosing the right member visibility
+    The public API is what matters the most. Implementation details should never be leaked to the public interface.
+    The public interface includes:
+     - Public classes
+     - Public members
+     - Protected members
+    Thus, there may arise a problem where one member should be protected AND internal. But we have no means to express this
+    in C#: We have "protected internal", but it means protected OR internal. In such a case, the best choice is to only use the
+    internal keyword for member visibility. This means that the member will be visible to all classes internally, even when
+    it's not desirable. But what matters the most is that it's not visible outside.
+    
+7.  Lazy initialization
+    Most of the time, it is desirable to let the CLR handle the class static initialization in a lazy way. Static constructors
+    should be avoided as much as possible.
+    The singleton pattern should be implemented with maximum laziness in order for the CLR to manage efficiently the resources,
+    by avoid the caching of unnecessary resources.
+    Examples of lazy singletons can be found all across the code in native classes or selectors caches.
+    
+8.  Native class cache
+9.  Native selector cache
+10. Exception handling

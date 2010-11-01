@@ -26,6 +26,11 @@ namespace System.MacOS.AppKit
 		public double Width { get { return Size.Width; } }
 		public double Height { get { return Size.Height; } }
 
+		public override string ToString()
+		{
+			return string.Format("[Rectangle: Left={0}, Top={1}, Width={2}, Height={3}]", Left, Top, Width, Height);
+		}
+
 		public bool Equals(Rectangle other)
 		{
 			return other.Location == Location && other.Size == Size;

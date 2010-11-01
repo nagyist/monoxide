@@ -7,7 +7,7 @@ namespace System.MacOS.WebKit
 	[NativeClass("WebView", "WebKit")]
 	public class WebView : View
 	{
-		#region NSView Interop
+		#region WebView Interop
 		
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport("libobjc", EntryPoint = "objc_msgSend")]

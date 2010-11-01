@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace System.MacOS.AppKit
 {
@@ -203,7 +204,7 @@ namespace System.MacOS.AppKit
 		[SelectorStub("setSelectedSegment:")]
 		private static void SetSelectedSegment(IntPtr self, IntPtr _cmd, IntPtr segment)
 		{
-			Console.WriteLine("Selected Segment: " + segment);
+			Debug.WriteLine("Selected Segment: " + segment);
 		}
 		
 		#endregion

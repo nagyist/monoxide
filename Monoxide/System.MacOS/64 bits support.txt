@@ -1,0 +1,15 @@
+Notes for code compatibility:
+
+Contrarily to Windows, Mac OS X is LP64, which means "long [int]" is 64 bits when compiling in 64 bits mode.
+This means that NS[U]Integer are 32 bits in 32 bits mode, and 64 bits in 64 bits mode.
+Therefore, NS[U]Integer should be marshaled to [U]IntPtr.
+Also, CGFloat is defined as float in 32 bits, and double in 64 bits.
+This means that we have no easy way of marshalling and we should therefore define two different prototypes for these…
+The prefered way would be to define two prototypes, ending in _32 and _64 respectively.
+The LP64 property defined in ObjectiveC can be used to determine which one to use.
+Since the current target is OSX, the LP64 evaluation is pretty simple, but if one wanted to be more accurate, a check
+should be made to differentiate between Windows (LLP64) and Unix(es) (LP64).
+
+Care should also be taken on the type encodings, as 64 and 32 bits int do not share the same type code.
+Type encodings are used for things such as class_addMethod. ALthough it should work "mot of the time" with wrong encodings,
+it is better to provide it with valid type encodings.
