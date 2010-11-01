@@ -281,6 +281,64 @@ namespace System.MacOS
 		
 		#endregion
 		
+		#region Point
+		
+		[DllImport("libobjc", EntryPoint = "objc_msgSend_stret")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern AppKit.PointF objc_msgSend_get_Point_32(IntPtr self, IntPtr sel);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper_stret")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern AppKit.PointF objc_msgSendSuper_get_Point_32(ref objc_super super, IntPtr sel);
+		[DllImport("libobjc", EntryPoint = "objc_msgSend_stret")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern AppKit.Point objc_msgSend_get_Point_64(IntPtr self, IntPtr sel);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper_stret")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern AppKit.Point objc_msgSendSuper_get_Point_64(ref objc_super super, IntPtr sel);
+		[DllImport("libobjc", EntryPoint = "objc_msgSend")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern void objc_msgSend_set_Point_32(IntPtr self, IntPtr sel, AppKit.PointF point);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern void objc_msgSendSuper_set_Point_32(ref objc_super super, IntPtr sel, AppKit.PointF point);
+		[DllImport("libobjc", EntryPoint = "objc_msgSend")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern void objc_msgSend_set_Point_64(IntPtr self, IntPtr sel, AppKit.Point point);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern void objc_msgSendSuper_set_Point_64(ref objc_super super, IntPtr sel, AppKit.Point point);
+		
+		#endregion
+
+		#region Size
+		
+		[DllImport("libobjc", EntryPoint = "objc_msgSend_stret")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern AppKit.SizeF objc_msgSend_get_Size_32(IntPtr self, IntPtr sel);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper_stret")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern AppKit.SizeF objc_msgSendSuper_get_Size_32(ref objc_super super, IntPtr sel);
+		[DllImport("libobjc", EntryPoint = "objc_msgSend_stret")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern AppKit.Size objc_msgSend_get_Size_64(IntPtr self, IntPtr sel);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper_stret")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern AppKit.Size objc_msgSendSuper_get_Size_64(ref objc_super super, IntPtr sel);
+		[DllImport("libobjc", EntryPoint = "objc_msgSend")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern void objc_msgSend_set_Size_32(IntPtr self, IntPtr sel, AppKit.SizeF size);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern void objc_msgSendSuper_set_Size_32(ref objc_super super, IntPtr sel, AppKit.SizeF size);
+		[DllImport("libobjc", EntryPoint = "objc_msgSend")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern void objc_msgSend_set_Size_64(IntPtr self, IntPtr sel, AppKit.Size size);
+		[DllImport("libobjc", EntryPoint = "objc_msgSendSuper")]
+		[SuppressUnmanagedCodeSecurity]
+		public static extern void objc_msgSendSuper_set_Size_64(ref objc_super super, IntPtr sel, AppKit.Size size);
+		
+		#endregion
+		
 		#region Rectangle
 		
 		[DllImport("libobjc", EntryPoint = "objc_msgSend_stret")]
