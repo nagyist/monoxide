@@ -7,6 +7,12 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Security;
+using Point = System.MacOS.CoreGraphics.Point;
+using PointF = System.MacOS.CoreGraphics.PointF;
+using Size = System.MacOS.CoreGraphics.Size;
+using SizeF = System.MacOS.CoreGraphics.SizeF;
+using Rectangle = System.MacOS.CoreGraphics.Rectangle;
+using RectangleF = System.MacOS.CoreGraphics.RectangleF;
 
 namespace System.MacOS
 {
@@ -36,12 +42,12 @@ namespace System.MacOS
 		/// </remarks>
 		private static List<Delegate> boundDelegates = new List<Delegate>();
 		
-		private static MethodInfo rectangle32To64 = typeof(AppKit.RectangleF).GetMethod("op_Implicit", new [] { typeof(AppKit.RectangleF) });
-		private static MethodInfo rectangle64To32 = typeof(AppKit.RectangleF).GetMethod("op_Implicit", new [] { typeof(AppKit.Rectangle) });
-		private static MethodInfo point32To64 = typeof(AppKit.PointF).GetMethod("op_Implicit", new [] { typeof(AppKit.PointF) });
-		private static MethodInfo point64To32 = typeof(AppKit.PointF).GetMethod("op_Implicit", new [] { typeof(AppKit.Point) });
-		private static MethodInfo size32To64 = typeof(AppKit.SizeF).GetMethod("op_Implicit", new [] { typeof(AppKit.SizeF) });
-		private static MethodInfo size64To32 = typeof(AppKit.SizeF).GetMethod("op_Implicit", new [] { typeof(AppKit.Size) });
+		private static MethodInfo rectangle32To64 = typeof(RectangleF).GetMethod("op_Implicit", new [] { typeof(RectangleF) });
+		private static MethodInfo rectangle64To32 = typeof(RectangleF).GetMethod("op_Implicit", new [] { typeof(Rectangle) });
+		private static MethodInfo point32To64 = typeof(PointF).GetMethod("op_Implicit", new [] { typeof(PointF) });
+		private static MethodInfo point64To32 = typeof(PointF).GetMethod("op_Implicit", new [] { typeof(Point) });
+		private static MethodInfo size32To64 = typeof(SizeF).GetMethod("op_Implicit", new [] { typeof(SizeF) });
+		private static MethodInfo size64To32 = typeof(SizeF).GetMethod("op_Implicit", new [] { typeof(Size) });
 		
 		[return: MarshalAsAttribute(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler), MarshalCookie = "a")]
 		private delegate string DescriptionDelegate(IntPtr self, IntPtr _cmd);
@@ -515,9 +521,9 @@ namespace System.MacOS
 			switch (type.FullName)
 			{
 				case "System.Double": return typeof(float);
-				case "System.MacOS.AppKit.Rectangle": return typeof(AppKit.RectangleF);
-				case "System.MacOS.AppKit.Point": return typeof(AppKit.PointF);
-				case "System.MacOS.AppKit.Size": return typeof(AppKit.SizeF);
+				case "System.MacOS.CoreGraphics.Rectangle": return typeof(RectangleF);
+				case "System.MacOS.CoreGraphics.Point": return typeof(PointF);
+				case "System.MacOS.CoreGraphics.Size": return typeof(SizeF);
 				default: return type;
 			}
 		}
@@ -569,9 +575,9 @@ namespace System.MacOS
 				}
 				if (newType == originalParameter.ParameterType) continue;
 				else if (newType == typeof(float)) ilGenerator.Emit(OpCodes.Conv_R8);
-				else if (newType == typeof(AppKit.RectangleF)) ilGenerator.Emit(OpCodes.Call, rectangle32To64);
-				else if (newType == typeof(AppKit.PointF)) ilGenerator.Emit(OpCodes.Call, point32To64);
-				else if (newType == typeof(AppKit.SizeF)) ilGenerator.Emit(OpCodes.Call, size32To64);
+				else if (newType == typeof(RectangleF)) ilGenerator.Emit(OpCodes.Call, rectangle32To64);
+				else if (newType == typeof(PointF)) ilGenerator.Emit(OpCodes.Call, point32To64);
+				else if (newType == typeof(SizeF)) ilGenerator.Emit(OpCodes.Call, size32To64);
 				else throw new InvalidOperationException();
 			}
 			
@@ -580,9 +586,9 @@ namespace System.MacOS
 			if (returnValueType != method.ReturnType)
 			{
 				if (returnValueType == typeof(float)) ilGenerator.Emit(OpCodes.Conv_R4);
-				else if (returnValueType == typeof(AppKit.RectangleF)) ilGenerator.Emit(OpCodes.Call, rectangle64To32);
-				else if (returnValueType == typeof(AppKit.PointF)) ilGenerator.Emit(OpCodes.Call, point64To32);
-				else if (returnValueType == typeof(AppKit.SizeF)) ilGenerator.Emit(OpCodes.Call, size64To32);
+				else if (returnValueType == typeof(RectangleF)) ilGenerator.Emit(OpCodes.Call, rectangle64To32);
+				else if (returnValueType == typeof(PointF)) ilGenerator.Emit(OpCodes.Call, point64To32);
+				else if (returnValueType == typeof(SizeF)) ilGenerator.Emit(OpCodes.Call, size64To32);
 			}
 			
 			ilGenerator.Emit(OpCodes.Ret);

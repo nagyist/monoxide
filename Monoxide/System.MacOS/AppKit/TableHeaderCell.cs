@@ -1,4 +1,5 @@
 using System;
+using System.MacOS.CoreGraphics;
 
 namespace System.MacOS.AppKit
 {

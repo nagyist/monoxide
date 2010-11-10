@@ -1,0 +1,45 @@
+2010-11-10  Fabien  <goldencrystal@gmail.com>
+
+	* CoreText:
+	* CoreImage:
+	* CoreGraphics:
+	* Cell.cs:
+	* View.cs:
+	* Image.cs:
+	* Window.cs:
+	* WebView.cs:
+	* WebFrame.cs:
+	* System.MacOS.csproj:
+	* Path.cs:
+	* Size.cs:
+	* Point.cs:
+	* SearchField.cs:
+	* Color.cs:
+	* Matrix.cs:
+	* ObjectiveC.Bridging.cs:
+	* CommonClasses.cs:
+	* DrawEventArgs.cs:
+	* RGBColor.cs:
+	* PathData.cs:
+	* TableHeaderCell.cs:
+	* BlendMode.cs:
+	* Rectangle.cs:
+	* GraphicsContext.cs:
+	* ColorSpace.cs:
+	* SafeNativeMethods.AppKit.cs:
+	* PathCommand.cs:
+	* ImageRepresentation.cs:
+	* SafeNativeMethods.CoreGraphics.cs:
+	* BitmapImageRepresentation.cs:
+	* SafeNativeMethods.CoreFoundation.cs:
+	* ColorRenderingIntent.cs:
+	* SupportedFileTypeAttribute.cs: 
+
+	* DrawableView.cs: Exposes the draw event
+
+	* Size.cs:
+	* Point.cs:
+	* Rectangle.cs: Moved
+
+	* SafeNativeMethods.cs: Split into multiple files
+

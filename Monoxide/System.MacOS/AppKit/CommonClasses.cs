@@ -12,6 +12,7 @@ namespace System.MacOS.AppKit
 		}
 		
 		private static class _NSBundle { public static readonly IntPtr ClassHandle = GetClass("NSBundle"); }
+		private static class _NSGraphicsContext { public static readonly IntPtr ClassHandle = GetClass("NSGraphicsContext"); }
 		private static class _NSImage { public static readonly IntPtr ClassHandle = GetClass("NSImage"); }
 		private static class _NSCursor { public static readonly IntPtr ClassHandle = GetClass("NSCursor"); }
 		private static class _NSAlert { public static readonly IntPtr ClassHandle = GetClass("NSAlert"); }
@@ -30,6 +31,7 @@ namespace System.MacOS.AppKit
 		private static class _NSOutlineView { public static readonly IntPtr ClassHandle = GetClass("NSOutlineView"); }
 		
 		public static IntPtr NSBundle { get { return _NSBundle.ClassHandle; } }
+		public static IntPtr NSGraphicsContext { get { return _NSGraphicsContext.ClassHandle; } }
 		public static IntPtr NSImage { get { return _NSImage.ClassHandle; } }
 		public static IntPtr NSCursor { get { return _NSCursor.ClassHandle; } }
 		public static IntPtr NSAlert { get { return _NSAlert.ClassHandle; } }

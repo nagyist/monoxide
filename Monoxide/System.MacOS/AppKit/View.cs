@@ -3,6 +3,7 @@ using System.Security;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.MacOS.CoreGraphics;
 
 namespace System.MacOS.AppKit
 {
@@ -27,6 +28,12 @@ namespace System.MacOS.AppKit
 
 				if (view.Created)
 					SafeNativeMethods.objc_msgSend(view.NativePointer, Selectors.AddSubview, item.NativePointer);
+			}
+
+			public void AddRange(params View[] items)
+			{
+				foreach (var item in items)
+					Add(item);
 			}
 			
 			public void Clear()
@@ -102,7 +109,7 @@ namespace System.MacOS.AppKit
 		}
 		
 		[SelectorStub("setFrame:")]
-		static void SetFrame(IntPtr self, IntPtr sel, Rectangle frameRect)
+		static void SetFrameInternal(IntPtr self, IntPtr sel, Rectangle frameRect)
 		{
 			var view = GetInstance(self);
 
@@ -123,7 +130,7 @@ namespace System.MacOS.AppKit
 		}
 
 		[SelectorStub("setFrameSize:")]
-		static void SetFrameSize(IntPtr self, IntPtr sel, Size frameSize)
+		static void SetFrameSizeInternal(IntPtr self, IntPtr sel, Size frameSize)
 		{
 			var view = GetInstance(self);
 
@@ -143,6 +150,25 @@ namespace System.MacOS.AppKit
 			else
 				SafeNativeMethods.objc_msgSendSuper_set_Size_32(ref view.super, Selectors.SetFrameSize, frameSize);
 		}
+
+		[SelectorStub("isFlipped")]
+		static bool IsFlippedInternal(IntPtr self, IntPtr sel) { return true; } // All System.MacOS views will have flipped coordinate systems
+
+		[SelectorStub("isOpaque", Kind = StubKind.InstanceLazy)]
+		static bool IsOpaqueInternal(IntPtr self, IntPtr sel)
+		{
+			var view = GetInstance(self);
+
+			return view.IsOpaque;
+		}
+
+		[SelectorStub("drawRect:", Kind = StubKind.InstanceLazy)]
+		static void DrawRectangleInternal(IntPtr self, IntPtr sel, Rectangle dirtyRect)
+		{
+			var view = GetInstance(self);
+
+			view.DrawRectangle(GraphicsContext.Current, dirtyRect);
+		}
 		
 		#region Method Selector Ids
 
@@ -161,6 +187,9 @@ namespace System.MacOS.AppKit
 			static class addSubview { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("addSubview:"); }
 			static class resizeSubviewsWithOldSize { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("resizeSubviewsWithOldSize:"); }
 			static class resizeWithOldSuperviewSize { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("resizeWithOldSuperviewSize:"); }
+			static class isFlipped { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("isFlipped"); }
+			static class isOpaque { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("isOpaque"); }
+			static class drawRect { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("drawRect:"); }
 			
 			public static IntPtr InitWithFrame { get { return initWithFrame.SelectorHandle; } }
 			//public static IntPtr Frame { get { return View.Selectors.frame.SelectorHandle; } }
@@ -174,6 +203,9 @@ namespace System.MacOS.AppKit
 			public static IntPtr AddSubview { get { return addSubview.SelectorHandle; } }
 			public static IntPtr ResizeSubviewsWithOldSize { get { return resizeSubviewsWithOldSize.SelectorHandle; } }
 			public static IntPtr ResizeWithOldSuperviewSize { get { return resizeWithOldSuperviewSize.SelectorHandle; } }
+			public static IntPtr IsFlipped { get { return isFlipped.SelectorHandle; } }
+			public static IntPtr IsOpaque { get { return isOpaque.SelectorHandle; } }
+			public static IntPtr DrawRect { get { return drawRect.SelectorHandle; } }
 		}
 		
 		#endregion
@@ -487,13 +519,20 @@ namespace System.MacOS.AppKit
 					if (double.IsNaN(margin.Right)) x = margin.Left;
 					else x = margin.Left + (parentSize.Width - (w + margin.Left + margin.Right)) / 2;
 
-				// Vertical (Remember that y is going up in Cocoa…)
-				if (double.IsNaN(margin.Bottom))
-					if (double.IsNaN(margin.Top)) y = (parentSize.Height - h) / 2;
-					else y = parentSize.Height - margin.Top - h;
+//				// Vertical (Remember that y is going up in Cocoa…)
+//				if (double.IsNaN(margin.Bottom))
+//					if (double.IsNaN(margin.Top)) y = (parentSize.Height - h) / 2;
+//					else y = parentSize.Height - margin.Top - h;
+//				else
+//					if (double.IsNaN(margin.Top)) y = margin.Bottom;
+//					else y = margin.Bottom + (parentSize.Height - (h + margin.Top + margin.Bottom)) / 2;
+				// Vertical (for flipped coordinates)
+				if (double.IsNaN(margin.Top))
+					if (double.IsNaN(margin.Bottom)) y = (parentSize.Height - h) / 2;
+					else y = parentSize.Height - margin.Bottom - h;
 				else
-					if (double.IsNaN(margin.Top)) y = margin.Bottom;
-					else y = margin.Bottom + (parentSize.Height - (h + margin.Top + margin.Bottom)) / 2;
+					if (double.IsNaN(margin.Bottom)) y = margin.Top;
+					else y = margin.Top + (parentSize.Height - (h + margin.Top + margin.Bottom)) / 2;
 	
 				Frame = new Rectangle(x, y, w, h);
 			}
@@ -523,6 +562,21 @@ namespace System.MacOS.AppKit
 		public View Parent { get { return owner as View; } }
 		
 		public ViewCollection Children { get { return viewCollection; } }
+
+		public virtual bool IsOpaque
+		{
+			[SelectorImplementation("isOpaque")]
+			get { return Created ? SafeNativeMethods.objc_msgSendSuper_get_Boolean(ref super, Selectors.IsOpaque) : false; }
+		}
+
+		[SelectorImplementation("drawRect:")]
+		protected virtual void DrawRectangle(GraphicsContext context, Rectangle bounds)
+		{
+			if (ObjectiveC.LP64)
+				SafeNativeMethods.objc_msgSendSuper_set_Rectangle_64(ref super, Selectors.DrawRect, bounds);
+			else
+				SafeNativeMethods.objc_msgSendSuper_set_Rectangle_32(ref super, Selectors.DrawRect, bounds);
+		}
 		
 		public virtual object Clone()
 		{

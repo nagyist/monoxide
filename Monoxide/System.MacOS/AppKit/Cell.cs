@@ -42,7 +42,7 @@ namespace System.MacOS.AppKit
 			disposed = true;
 		}
 		
-		protected void Dispose(bool disposing)
+		protected virtual void Dispose(bool disposing)
 		{
 			if (super.Receiver != IntPtr.Zero)
 			{

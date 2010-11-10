@@ -2,6 +2,8 @@ using System;
 using System.MacOS.AppKit;
 using System.Security;
 using System.Runtime.InteropServices;
+using System.MacOS.CoreGraphics;
+
 namespace System.MacOS.WebKit
 {
 	[NativeClass("WebView", "WebKit")]
