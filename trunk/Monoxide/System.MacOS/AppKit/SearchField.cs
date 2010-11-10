@@ -9,5 +9,10 @@ namespace System.MacOS.AppKit
 	public class SearchField<TCell> : TextField<TCell>
 		where TCell : SearchFieldCell, new()
 	{
+		public SearchField()
+		{
+			Width = 200;
+			Height = 22;
+		}
 	}
 }

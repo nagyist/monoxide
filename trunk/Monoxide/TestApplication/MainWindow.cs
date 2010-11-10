@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.MacOS.AppKit;
 using System.MacOS.WebKit;
+using System.MacOS.CoreGraphics;
 
 namespace TestApplication
 {
@@ -11,6 +12,7 @@ namespace TestApplication
 		Button button2;
 		Button checkBox;
 		WebView webView;
+		DrawableView paintedView;
 		
 		public MainWindow()
 		{
@@ -21,21 +23,27 @@ namespace TestApplication
 			button1.Action += HandleButton1Action;
 			button2 = new Button() { Title = "\u26A0 Don't click me \u2620", Width = 200, Margin = new Thickness(double.NaN, double.NaN, 0, 0) };
 			button2.Action += HandleButton2Action;
-			checkBox = new Button() { Title = "Closable", ButtonType = ButtonType.Switch, Width = 100, Height = 24, Margin = new Thickness(110, double.NaN, double.NaN, 100) };
-			webView = new WebView() { Margin = new Thickness(0, 0, 0, 160) };
+			checkBox = new Button() { Title = "Closable", ButtonType = ButtonType.Switch, Width = 100, Height = 24, Margin = new Thickness(120, double.NaN, double.NaN, 100) };
+			paintedView = new DrawableView() { Height = 100, Margin = new Thickness(0, double.NaN, 0, 160) };
+			paintedView.Draw += HandlePaintedViewDraw;
+			webView = new WebView() { Margin = new Thickness(0, 0, 0, 260) };
 #if DOCUMENT
 //			checkBox.Checked = true;
 #endif
 			Title = "Hello From C#";
-			Content.Children.Add(button1);
-			Content.Children.Add(button2);
-			Content.Children.Add(checkBox);
-			Content.Children.Add(new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(10, double.NaN, double.NaN, 32) });
-			Content.Children.Add(new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(double.NaN, double.NaN, 10, 32) });
-			Content.Children.Add(new SearchField() { Width = double.NaN, Height = 22, Margin = new Thickness(120, double.NaN, 120, 32) });
-			Content.Children.Add(new TextField() { Width = double.NaN, Height = 22, Margin = new Thickness(120, double.NaN, 120, 64) });
-			Content.Children.Add(new ComboBox() { Width = double.NaN, Height = 22, Margin = new Thickness(10, double.NaN, 10, 132) });
-			Content.Children.Add(webView);
+			Content.Children.AddRange
+			(
+				button1,
+				button2,
+				checkBox,
+				new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(10, double.NaN, double.NaN, 32) },
+				new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(double.NaN, double.NaN, 10, 32) },
+				new SearchField() { Width = double.NaN, Height = 22, Margin = new Thickness(120, double.NaN, 120, 32) },
+				new TextField() { Width = double.NaN, Height = 22, Margin = new Thickness(120, double.NaN, 120, 64) },
+				new ComboBox() { Width = double.NaN, Height = 22, Margin = new Thickness(10, double.NaN, 10, 132) },
+				paintedView,
+				webView
+			);
 		}
 		
 		private void CreateToolbarTemplate()
@@ -48,6 +56,7 @@ namespace TestApplication
 			var myItem1 = new ImageToolbarItem("Foo") { Label = "Foo", Image = Image.Info };
 			var myItem2 = new ImageToolbarItem("Bar") { Label = "Bar", Image = Image.UserAccounts };
 			var myItem3 = new ViewToolbarItem("FooBar") { Label = "FooBar", View = segmentedControl };
+			var myItem4 = new ViewToolbarItem("Search") { Label = "Search", View = new SearchField() };
 			
 			ToolbarTemplate.TryDefine
 			(
@@ -61,13 +70,16 @@ namespace TestApplication
 					ToolbarItem.FlexibleSpaceToolbarItem,
 					myItem1,
 					myItem2,
-					myItem3
+					myItem3,
+					myItem4
 				},
 				new []
 				{
 					ToolbarItem.ColorsToolbarItem,
 					myItem1,
-					myItem3
+					myItem3,
+					ToolbarItem.FlexibleSpaceToolbarItem,
+					myItem4
 				}
 			);
 		}
@@ -95,6 +107,19 @@ namespace TestApplication
 					alert.ShowDialog();
 				}
 			}
+		}
+
+		private void HandlePaintedViewDraw (object sender, DrawEventArgs e)
+		{
+			e.Context.FillColor = new RGBColor(1, 0, 0, 1);
+			e.Context.FillRectangle(e.Bounds);
+			e.Context.FillColor = new RGBColor(0, 0, 1, 1);
+			e.Context.FillRectangle(paintedView.ActualWidth / 4, paintedView.ActualHeight / 4, paintedView.ActualWidth / 2, paintedView.ActualHeight / 2);
+			e.Context.FillColor = new RGBColor(0, 1, 0, 1);
+			e.Context.FillRectangle(paintedView.ActualWidth / 8, paintedView.ActualHeight / 4, paintedView.ActualWidth / 8, paintedView.ActualHeight / 2);
+			e.Context.FillRectangle(6 * paintedView.ActualWidth / 8, paintedView.ActualHeight / 4, paintedView.ActualWidth / 8, paintedView.ActualHeight / 2);
+			e.Context.FillColor = new RGBColor(1, 1, 0, 1);
+			e.Context.FillEllipse(3 * paintedView.ActualWidth / 8, paintedView.ActualHeight / 8, paintedView.ActualWidth / 4, 6 * paintedView.ActualHeight / 8);
 		}
 		
 		public bool CanClose { get { return checkBox.Checked; } }

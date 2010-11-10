@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Windows.Markup;
+using System.MacOS.CoreGraphics;
 
 namespace System.MacOS.AppKit
 {

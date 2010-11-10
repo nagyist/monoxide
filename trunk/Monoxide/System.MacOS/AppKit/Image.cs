@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace System.MacOS.AppKit
 {
 	[NativeClass("NSImage", "AppKit")]
-	public class Image
+	public class Image : IDisposable
 	{
 		#region Method Selector Ids
 		
@@ -19,7 +19,7 @@ namespace System.MacOS.AppKit
 		
 		#region Cache
 		
-		static readonly NativeObjectCache<Image> imageCache = new NativeObjectCache<Image>(i => i.NativePointer, i => new Image(i));
+		static readonly NativeObjectCache<Image> imageCache = new NativeObjectCache<Image>(i => i.NativePointer, p => new Image(p));
 		
 		internal static Image GetInstance(IntPtr nativePointer) { return imageCache.GetObject(nativePointer); }
 		
@@ -195,7 +195,7 @@ namespace System.MacOS.AppKit
 		
 		~Image() { Dispose(false); }
 		
-		protected void Dispose(bool disposing)
+		protected virtual void Dispose(bool disposing)
 		{
 			if (super.Receiver != IntPtr.Zero)
 			{

@@ -44,7 +44,7 @@ namespace System.MacOS.WebKit
 		
 		~WebFrame() { Dispose(false); }
 		
-		protected void Dispose(bool disposing)
+		protected virtual void Dispose(bool disposing)
 		{
 			if (nativePointer != IntPtr.Zero)
 			{

@@ -1,6 +1,6 @@
 using System;
 
-namespace System.MacOS.AppKit
+namespace System.MacOS.CoreGraphics
 {
 	public struct Size : IEquatable<Size>
 	{

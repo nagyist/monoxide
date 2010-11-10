@@ -46,9 +46,6 @@
     <Compile Include="AutoReleasePool.cs" />
     <Compile Include="NativeObjectHandle.cs" />
     <Compile Include="NativeObjectCache.cs" />
-    <Compile Include="AppKit\Size.cs" />
-    <Compile Include="AppKit\Point.cs" />
-    <Compile Include="AppKit\Rectangle.cs" />
     <Compile Include="AppKit\WindowStyle.cs" />
     <Compile Include="AppKit\Alert.cs" />
     <Compile Include="AppKit\DockTile.cs" />
@@ -146,8 +143,29 @@
     <Compile Include="AppKit\ItemSelectionMode.cs" />
     <Compile Include="AppKit\TableHeaderCell.cs" />
     <Compile Include="AppKit\ColumnSizeMode.cs" />
-    <Compile Include="CoreFoundation\Locale.cs" />
     <Compile Include="AppKit\Thickness.cs" />
+    <Compile Include="AppKit\GraphicsContext.cs" />
+    <Compile Include="AppKit\ImageRepresentation.cs" />
+    <Compile Include="AppKit\SupportedFileTypeAttribute.cs" />
+    <Compile Include="AppKit\BitmapImageRepresentation.cs" />
+    <Compile Include="CoreFoundation\Locale.cs" />
+    <Compile Include="CoreGraphics\Matrix.cs" />
+    <Compile Include="CoreGraphics\BlendMode.cs" />
+    <Compile Include="CoreGraphics\ColorSpace.cs" />
+    <Compile Include="CoreGraphics\Color.cs" />
+    <Compile Include="CoreGraphics\ColorRenderingIntent.cs" />
+    <Compile Include="CoreGraphics\RGBColor.cs" />
+    <Compile Include="SafeNativeMethods.CoreFoundation.cs" />
+    <Compile Include="SafeNativeMethods.CoreGraphics.cs" />
+    <Compile Include="SafeNativeMethods.AppKit.cs" />
+    <Compile Include="AppKit\DrawEventArgs.cs" />
+    <Compile Include="AppKit\DrawableView.cs" />
+    <Compile Include="CoreGraphics\Path.cs" />
+    <Compile Include="CoreGraphics\Rectangle.cs" />
+    <Compile Include="CoreGraphics\Size.cs" />
+    <Compile Include="CoreGraphics\Point.cs" />
+    <Compile Include="CoreGraphics\PathData.cs" />
+    <Compile Include="CoreGraphics\PathCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AppKit\Commands.fr.resx" />
@@ -158,9 +176,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Quartz\" />
     <Folder Include="WebKit\" />
+    <Folder Include="AppKit\" />
     <Folder Include="CoreFoundation\" />
+    <Folder Include="CoreGraphics\" />
+    <Folder Include="CoreGraphics\" />
+    <Folder Include="CoreText\" />
+    <Folder Include="CoreImage\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
