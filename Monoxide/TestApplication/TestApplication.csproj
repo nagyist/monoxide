@@ -15,21 +15,31 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\MacOSTest.app\Contents\MacOS\</OutputPath>
+    <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;DOCUMENT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="CFProcessPath" value="/Users/Fabien/Documents/MonoDevelop Projects/Monoxide/TestApplication/bin/Debug/MacOSTest.app/Contents/MacOS/MacOSTest" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="sh finalize.sh" workingdir="${TargetDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Release\MacOSTest.app\Contents\MacOS\</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DefineConstants>DOCUMENT</DefineConstants>
     <CustomCommands>
       <CustomCommands>
-        <Command type="Execute" command="bin/Release/MacOSTest.app/Contents/MacOS/MacOSTest" workingdir="" />
+        <Command type="Execute" command="sh finalize.sh" workingdir="${TargetDir}" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -47,5 +57,38 @@
       <Project>{F93BAEC6-8403-42B1-BA86-71E00A1450FE}</Project>
       <Name>System.MacOS</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MacOSTest.app\" />
+    <Folder Include="MacOSTest.app\Contents\" />
+    <Folder Include="MacOSTest.app\Contents\MacOS\" />
+    <Folder Include="MacOSTest.app\Contents\Resources\" />
+    <Folder Include="MacOSTest.app\Contents\Resources\English.lproj\" />
+    <Folder Include="MacOSTest.app\Contents\Resources\French.lproj\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\..\Volumes\Data\Users\Fabien\Documents\MonoDevelop Projects\Monoxide\TestApplication\MacOSTest.app\Contents\Info.plist">
+      <Link>MacOSTest.app\Contents\Info.plist</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\..\Volumes\Data\Users\Fabien\Documents\MonoDevelop Projects\Monoxide\TestApplication\MacOSTest.app\Contents\MacOS\MacOSTest">
+      <Link>MacOSTest.app\Contents\MacOS\MacOSTest</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\..\Volumes\Data\Users\Fabien\Documents\MonoDevelop Projects\Monoxide\TestApplication\MacOSTest.app\Contents\Resources\Credits.rtf">
+      <Link>MacOSTest.app\Contents\Resources\Credits.rtf</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\..\Volumes\Data\Users\Fabien\Documents\MonoDevelop Projects\Monoxide\TestApplication\MacOSTest.app\Contents\Resources\MacOSTest.icns">
+      <Link>MacOSTest.app\Contents\Resources\MacOSTest.icns</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\..\..\..\..\Volumes\Data\Users\Fabien\Documents\MonoDevelop Projects\Monoxide\TestApplication\MacOSTest.app\Contents\Resources\French.lproj\Info.plist">
+      <Link>MacOSTest.app\Contents\Resources\French.lproj\Info.plist</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="finalize.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

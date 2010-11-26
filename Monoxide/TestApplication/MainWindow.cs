@@ -19,14 +19,14 @@ namespace TestApplication
 			CreateToolbarTemplate();
 			Style |= WindowStyle.UnifiedTitleAndToolbar;
 			Toolbar = new Toolbar() { TemplateName = "Main", Customizable = true };
-			button1 = new Button() { Title = "Click me \u263A", Width = 100, Margin = new Thickness(double.NaN, double.NaN, 200, 0) };
+			button1 = new Button() { Title = "Click me \u263A", Width = 100, Margin = new Thickness(0, 0, 200, 0), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom };
 			button1.Action += HandleButton1Action;
-			button2 = new Button() { Title = "\u26A0 Don't click me \u2620", Width = 200, Margin = new Thickness(double.NaN, double.NaN, 0, 0) };
+			button2 = new Button() { Title = "\u26A0 Don't click me \u2620", Width = 200, Margin = new Thickness(0, 0, 0, 0), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom };
 			button2.Action += HandleButton2Action;
-			checkBox = new Button() { Title = "Closable", ButtonType = ButtonType.Switch, Width = 100, Height = 24, Margin = new Thickness(120, double.NaN, double.NaN, 100) };
-			paintedView = new DrawableView() { Height = 100, Margin = new Thickness(0, double.NaN, 0, 160) };
+			checkBox = new Button() { Title = "Closable", ButtonType = ButtonType.Switch, Width = 100, Height = 24, Margin = new Thickness(120, 0, 0, 100), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
+			paintedView = new DrawableView() { Height = 100, Margin = new Thickness(0, 0, 0, 160), VerticalAlignment = VerticalAlignment.Bottom };
 			paintedView.Draw += HandlePaintedViewDraw;
-			webView = new WebView() { Margin = new Thickness(0, 0, 0, 260) };
+			webView = new WebView() { Margin = new Thickness(0, 0, 0, 260), VerticalAlignment = VerticalAlignment.Top };
 #if DOCUMENT
 //			checkBox.Checked = true;
 #endif
@@ -36,11 +36,11 @@ namespace TestApplication
 				button1,
 				button2,
 				checkBox,
-				new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(10, double.NaN, double.NaN, 32) },
-				new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(double.NaN, double.NaN, 10, 32) },
-				new SearchField() { Width = double.NaN, Height = 22, Margin = new Thickness(120, double.NaN, 120, 32) },
-				new TextField() { Width = double.NaN, Height = 22, Margin = new Thickness(120, double.NaN, 120, 64) },
-				new ComboBox() { Width = double.NaN, Height = 22, Margin = new Thickness(10, double.NaN, 10, 132) },
+				new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(10, 0, 0, 32), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom },
+				new ColorWell() { Width = 100, Height = 100, Margin = new Thickness(0, 0, 10, 32), HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Bottom },
+				new SearchField() { Width = double.NaN, Height = 22, Margin = new Thickness(120, 0, 120, 32), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Bottom },
+				new TextField() { Height = 22, Margin = new Thickness(120, 0, 120, 64), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Bottom },
+				new ComboBox() { Height = 22, Margin = new Thickness(10, 0, 10, 132), HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Bottom },
 				paintedView,
 				webView
 			);

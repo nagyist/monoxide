@@ -1,3 +1,23 @@
+2010-11-26  Fabien  <goldencrystal@gmail.com>
+
+	* MainWindow.cs: Updated for the new dll version
+
+	* MacOSTest.app: Bundle skeleton
+
+	* TestApplication.csproj:
+	* Contents:
+	* MacOS:
+	* Resources:
+	* Info.plist:
+	* MacOSTest:
+	* Credits.rtf:
+	* French.lproj:
+	* English.lproj:
+	* MacOSTest.icns:
+	* Info.plist: 
+
+	* finalize.sh: Bundle finalization script
+
 2010-11-10  Fabien  <goldencrystal@gmail.com>
 
 	* MainWindow.cs: 

@@ -1,0 +1,7 @@
+#!/bin/sh
+export MONO_GDIP_USE_COCOA_BACKEND=1
+dir="$(dirname "$0")"
+name="$(basename "$0")"
+mono="$dir/$name.Mono"
+ln -s "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono" "$mono"
+exec -a "$name" "$mono" "$dir/$name.exe"
