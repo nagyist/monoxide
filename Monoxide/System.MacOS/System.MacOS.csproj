@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;TESTING</DefineConstants>
+    <DefineConstants>DEBUG;TESTING;MACOSX_10_6</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TESTING</DefineConstants>
+    <DefineConstants>TESTING;MACOSX_10_6</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -166,6 +166,18 @@
     <Compile Include="CoreGraphics\Point.cs" />
     <Compile Include="CoreGraphics\PathData.cs" />
     <Compile Include="CoreGraphics\PathCommand.cs" />
+    <Compile Include="AppKit\HorizontalAlignment.cs" />
+    <Compile Include="AppKit\VerticalAlignment.cs" />
+    <Compile Include="AppKit\ControlSize.cs" />
+    <Compile Include="AppKit\AttributedString.cs" />
+    <Compile Include="Memory.cs" />
+    <Compile Include="ObjectiveC.String.cs" />
+    <Compile Include="ObjectiveC.Object.cs" />
+    <Compile Include="CloneFactory.cs" />
+    <Compile Include="SafeNativeMethods.ApplicationServices.cs" />
+    <Compile Include="SafeNativeMethods.CoreServices.cs" />
+    <Compile Include="NSDictionary.cs" />
+    <Compile Include="OSVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AppKit\Commands.fr.resx" />

@@ -1,3 +1,88 @@
+2010-11-26  Fabien  <goldencrystal@gmail.com>
+
+	* ObjectiveC.cs: Added and disabled a tweak for process and
+	bundle path. It don't seem to work.
+	MutableCopy !
+
+	* System.MacOS.csproj:
+	* ControlSize.cs:
+	* VerticalAlignment.cs:
+	* HorizontalAlignment.cs: 
+
+	* WebView.cs: Small change in the internal native
+	initialization procedure.
+
+	* ViewToolbarItem.cs: Rudimentary fix for the new layout
+	model. It works for now.
+
+	* Thickness.cs: Lot of operator overloading… Maybe too much ?
+
+	* View.cs: Code cleaned and new layout model. (Still need some
+	tweaks, especially for toolbar items, content views, and
+	splitviews)
+	SplitViews are still broken.
+	ScrollViews seem to work somehow. (But they need some work
+	nonetheless)
+
+	* Cell.cs: Added the ControlSize property as well as a new
+	(and unused yet) measure method.
+
+	* Application.cs: Added Tweaks for the process and bundle… But
+	they crash the application when launched as a bundle, so they
+	are disabled.
+	Removed the setAppleMenu: call for Snow Leopard as it finally
+	seems to be unecessary.
+	The Application class now provides Mac OSX OSVersion.
+
+	* Window.cs: ContentView is now autosized, yeah !
+	The native pointer is registered much earlier, in order to
+	prevent possible bugs.
+
+	* AttributedString.cs: To implement.
+
+	* Bundle.cs: Added an AssemblyBundle property
+	Can find bundles based on assembly
+
+	* SafeNativeMethods.CoreFoundation.cs: Private methods used
+	for tweaks. Disabled by default.
+
+	* CloneFactory.cs: This will be used for reworking a bit the
+	current bridging strategy.
+
+	* ObjectiveC.Bridging.cs: Fix for native object copying.
+
+	* SafeNativeMethods.cs: Added methods for NSDictionary.
+
+	* SafeNativeMethods.ApplicationServices.cs: Moved from AppKit
+
+	* ObjectiveC.String.cs: Implementation of a wrapper for CLR
+	strings… Not used yet.
+
+	* ObjectiveC.Object.cs: Future implementations for CLRObject
+	and futre base implementation for CLR* Objective-C types
+
+	* OSVersion.cs: Use Gestalt to get OSX version info and build
+	an OperatingSystem out of it.
+
+	* NativeClassAttribute.cs: Allow the attribute to be used on
+	structs.
+
+	* SafeNativeMethods.AppKit.cs: NSRange and NSNotFound added.
+	Moved some methods to a new file.
+
+	* SafeNativeMethods.CoreServices.cs: Gestalt Manager ->
+	Gestalt API
+
+	* Rectangle.cs: Let the properties be modifiable
+
+	* Size.cs: Some operator goodness, and infinite size.
+
+	* NSDictionary.cs: Helper methods for the native type
+	NSDictionary.
+
+	* Memory.cs: Generic memory manipulation wrappers using cpblk
+	and initblk.
+
 2010-11-10  Fabien  <goldencrystal@gmail.com>
 
 	* CoreText:

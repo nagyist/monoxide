@@ -21,10 +21,26 @@ namespace System.MacOS.CoreGraphics
 			Size = new Size(width, height);
 		}
 		
-		public double Left { get { return Location.X; } }
-		public double Top { get { return Location.Y; } }
-		public double Width { get { return Size.Width; } }
-		public double Height { get { return Size.Height; } }
+		public double Left
+		{
+			get { return Location.X; }
+			set { Location.X = value; }
+		}
+		public double Top
+		{
+			get { return Location.Y; }
+			set { Location.Y = value; }
+		}
+		public double Width
+		{
+			get { return Size.Width; }
+			set { Size.Width = value; }
+		}
+		public double Height
+		{
+			get { return Size.Height; }
+			set { Size.Height = value; }
+		}
 
 		public override string ToString()
 		{

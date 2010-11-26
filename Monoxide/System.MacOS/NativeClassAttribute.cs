@@ -2,7 +2,7 @@ using System;
 
 namespace System.MacOS
 {
-	[AttributeUsage(AttributeTargets.Class)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 	internal class NativeClassAttribute : Attribute
 	{
 		public NativeClassAttribute(string nativeClass)

@@ -206,7 +206,7 @@ namespace System.MacOS.AppKit
 		public Window()
 		{
 			#warning Lazy content view creation might be a good idea
-			contentView = new View() { Width = 480, Height = 360 };
+			contentView = new View();
 			contentView.Owner = this;
 			style = WindowStyle.Titled | WindowStyle.Resizable | WindowStyle.Closable | WindowStyle.Miniaturizable;
 			clientRectangle = new Rectangle(335, 390, 480, 360);
@@ -230,8 +230,11 @@ namespace System.MacOS.AppKit
 		{	
 			using (var pool = LocalAutoReleasePool.Create())
 			{
+				contentView.Measure(clientRectangle.Size);
+				contentView.Arrange(new Rectangle(Point.Zero, clientRectangle.Size));
 				super.Receiver = ObjectiveC.AllocObject(NativeClass);
 				InitWithContentRectStyleMaskBackingDefer(ref super.Receiver, clientRectangle, style, SafeNativeMethods.BackingStoreType.BackingStoreBuffered, true);
+				windowCache.RegisterObject(this);
 				SafeNativeMethods.objc_msgSend_set_Boolean(super.Receiver, Selectors.SetReleasedWhenClosed, disposeWhenClosed);
 				SafeNativeMethods.objc_msgSend(super.Receiver, CommonSelectors.SetDelegate, Delegate.NativePointer);
 				SafeNativeMethods.objc_msgSend_set_String(super.Receiver, CommonSelectors.SetTitle, title ?? string.Empty);
@@ -239,7 +242,6 @@ namespace System.MacOS.AppKit
 					SafeNativeMethods.objc_msgSend(super.Receiver, Selectors.SetToolbar, toolbar.NativePointer);
 				SetContentBorderThicknessForEdge(super.Receiver, bottomBarHeight, Edge.Bottom);
 				SafeNativeMethods.objc_msgSend(super.Receiver, Selectors.SetContentView, contentView.NativePointer);
-				windowCache.RegisterObject(this);
 				OnLoad(EventArgs.Empty);
 			}
 		}

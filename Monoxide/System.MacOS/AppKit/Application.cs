@@ -209,7 +209,7 @@ namespace System.MacOS.AppKit
 		}
 		
 		#endregion
-		
+
 		private static readonly object syncRoot = new object();
 		public static Application Current { get; private set; }
 		private static volatile bool running; // This is a shared flag…
@@ -231,6 +231,8 @@ namespace System.MacOS.AppKit
 		
 		public Application()
 		{
+			//if (OSVersion.Version.Major > 10 || OSVersion.Version.Minor >= 6)
+			//	TweakProcessInformation();
 			// Setup an auto release pool that will be disposed on application run
 			creationPool = new AutoReleasePool();
 			lock (syncRoot)
@@ -242,6 +244,36 @@ namespace System.MacOS.AppKit
 			Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(CoreFoundation.Locale.Current.ClrCultureName);
 			Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
 		}
+
+		#if ENABLE_PROCESS_TWEAKS
+		private static void TweakProcessInformation()
+		{
+			string assemblyLocation = System.Reflection.Assembly.GetEntryAssembly().Location;
+			int bundleOffset = assemblyLocation.LastIndexOf(".app/", StringComparison.OrdinalIgnoreCase);
+
+			// If we are not in a bundle, give up here…
+			if (bundleOffset < 0) return;
+
+			string bundleLocation = assemblyLocation.Substring(0, bundleOffset + 4);
+
+			using (var pool = LocalAutoReleasePool.Create())
+			{
+				var assemblyBundle = AppKit.Bundle.FromPath(bundleLocation);
+				IntPtr infoDictionary = assemblyBundle.GetDictionaryCopy();
+	
+				NSDictionary.SetValue(infoDictionary, "LSBundlePath", assemblyBundle.Path);
+				NSDictionary.SetValue(infoDictionary, "LSDisplayName", assemblyBundle.Name);
+
+				long psn = 0;
+
+				SafeNativeMethods._RegisterApplication(infoDictionary, ref psn);
+
+				ObjectiveC.ReleaseObject(infoDictionary);
+			}
+		}
+		#endif
+
+		public static OperatingSystem OSVersion { get { return System.MacOS.OSVersion.Value; } }
 		
 		internal sealed override IntPtr NativePointer
 		{
@@ -425,11 +457,18 @@ namespace System.MacOS.AppKit
 				mainMenu.MenuItems.Add(windowsMenu);
 				mainMenu.MenuItems.Add(helpMenu);
 				
-				// The setAppleMenu selector is not documented anymore, but strictly needed to build a correct menu
+				// The setAppleMenu selector is not documented anymore, but strictly needed to build a correct menu.
+				// After a very brief test, it seems this is no longer necessary on Snow Leopard, and naming the menu "Apple" should be enough.
+				// This is good news as it means no undocumented API usage. Yeah ! :)
+#if !MACOSX_10_6
 				SafeNativeMethods.objc_msgSend(NativePointer, ObjectiveC.GetSelector("setAppleMenu:"), (appleMenu as Menu).NativePointer);
+#endif
 				SafeNativeMethods.objc_msgSend(NativePointer, ObjectiveC.GetSelector("setServicesMenu:"), (servicesMenu as Menu).NativePointer);
 				SafeNativeMethods.objc_msgSend(NativePointer, ObjectiveC.GetSelector("setWindowsMenu:"), (windowsMenu as Menu).NativePointer);
-				//SafeNativeMethods.objc_msgSend(NativePointer, ObjectiveC.GetSelector("setHelpMenu:"), (helpMenu as Menu).NativePointer);
+				// The setHelpMenu selector is only implemented begining with Snow Leopard, but may prrove very useful considering the defects of the mono platform on OSX…
+#if MACOSX_10_6
+				SafeNativeMethods.objc_msgSend(NativePointer, ObjectiveC.GetSelector("setHelpMenu:"), (helpMenu as Menu).NativePointer);
+#endif
 				SafeNativeMethods.objc_msgSend(NativePointer, ObjectiveC.GetSelector("setMainMenu:"), mainMenu.NativePointer);
 			}
 		}
