@@ -49,9 +49,9 @@ namespace System.MacOS.WebKit
 			ObjectiveC.EnsureWebKitFrameworkIsLoaded();
 		}
 		
-		internal override void InitializeNative(ref IntPtr nativePointer)
+		internal override void InitializeNative(ref IntPtr nativePointer, Rectangle frame)
 		{
-			InitWithFrameFrameNameGroupName(ref nativePointer, Frame, frameName, null);
+			InitWithFrameFrameNameGroupName(ref nativePointer, frame, frameName, null);
 		}
 		
 		private static void InitWithFrameFrameNameGroupName(ref IntPtr nativePointer, Rectangle bounds, string frameName, string groupName)

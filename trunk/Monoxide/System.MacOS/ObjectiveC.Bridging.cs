@@ -85,7 +85,7 @@ namespace System.MacOS
 		
 		private static IntPtr CopyWithZone(IntPtr self, IntPtr _cmd, IntPtr zone)
 		{
-			return self; // The object should not be cloned, as it would add no value, and we would lose track of it
+			return RetainObject(self); // The object should not be cloned, as it would add no value, and we would lose track of it
 		}
 		
 		private static void Dealloc(IntPtr self, IntPtr _cmd)

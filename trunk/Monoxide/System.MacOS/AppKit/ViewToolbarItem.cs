@@ -1,4 +1,5 @@
 using System;
+using System.MacOS.CoreGraphics;
 
 namespace System.MacOS.AppKit
 {
@@ -30,6 +31,12 @@ namespace System.MacOS.AppKit
 					if (view != null) view.Owner = null;
 					
 					view = value;
+
+					if (view != null)
+					{
+						view.Measure(Size.Infinite);
+						view.Arrange(new Rectangle(Point.Zero, Size.Infinite));
+					}
 					
 					if (Created)
 						SafeNativeMethods.objc_msgSend(NativePointer, Selectors.SetView, view != null ? view.NativePointer : IntPtr.Zero);

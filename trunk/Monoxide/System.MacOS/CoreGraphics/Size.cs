@@ -5,6 +5,7 @@ namespace System.MacOS.CoreGraphics
 	public struct Size : IEquatable<Size>
 	{
 		public static readonly Size Zero = new Size();
+		public static readonly Size Infinite = new Size(double.PositiveInfinity, double.PositiveInfinity);
 		
 		public double Width;
 		public double Height;
@@ -13,6 +14,11 @@ namespace System.MacOS.CoreGraphics
 		{
 			Width = width;
 			Height = height;
+		}
+
+		public override string ToString()
+		{
+			return string.Format("[Width={0}, Height={1}]", Width, Height);
 		}
 
 		public bool Equals(Size other)
@@ -43,6 +49,16 @@ namespace System.MacOS.CoreGraphics
 		public static explicit operator Point(Size s)
 		{
 			return new Point(s.Width, s.Height);
+		}
+
+		public static Size operator +(Size s1, Size s2)
+		{
+			return new Size(s1.Width + s2.Width, s1.Height + s2.Height);
+		}
+
+		public static Size operator -(Size s1, Size s2)
+		{
+			return new Size(s1.Width - s2.Width, s1.Height - s2.Height);
 		}
 	}
 	

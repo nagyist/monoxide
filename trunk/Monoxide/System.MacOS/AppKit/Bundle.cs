@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 
 namespace System.MacOS.AppKit
 {
@@ -10,11 +12,19 @@ namespace System.MacOS.AppKit
 		static class Selectors
 		{
 			static class mainBundle { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("mainBundle"); }
+			static class bundleWithPath { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("bundleWithPath:"); }
+
+			static class bundlePath { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("bundlePath"); }
 			
+			static class infoDictionary { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("infoDictionary"); }
 			static class objectForInfoDictionaryKey { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("objectForInfoDictionaryKey:"); }
 						
 			public static IntPtr MainBundle { get { return mainBundle.SelectorHandle; } }
+			public static IntPtr BundleWithPath { get { return bundleWithPath.SelectorHandle; } }
+
+			public static IntPtr BundlePath { get { return bundlePath.SelectorHandle; } }
 			
+			public static IntPtr InfoDictionary { get { return infoDictionary.SelectorHandle; } }
 			public static IntPtr ObjectForInfoDictionaryKey { get { return objectForInfoDictionaryKey.SelectorHandle; } }
 		}
 		
@@ -32,13 +42,52 @@ namespace System.MacOS.AppKit
 		{
 			public static readonly Bundle Instance = GetInstance(SafeNativeMethods.objc_msgSend(CommonClasses.NSBundle, Selectors.MainBundle));
 		}
+
+		static class entryAssemblyBundle
+		{
+			public static readonly Bundle Instance = GetAssemblyBundle(Assembly.GetEntryAssembly());
+		}
 		
 		public static Bundle MainBundle { get { return mainBundle.Instance; } }
+
+		public static Bundle FromPath(string path)
+		{
+			if (!Directory.Exists(path))
+				throw new ArgumentException();
+			return GetInstance(SafeNativeMethods.objc_msgSend_get_ObjectFromKey(CommonClasses.NSBundle, Selectors.BundleWithPath, path));
+		}
+
+		#warning Remove the System.IO. prefix when mcs is fixed…
+		private static string DetectBundlePath(string path)
+		{
+			if (string.IsNullOrEmpty(path)) return null;
+
+			if (File.Exists(path)) return DetectBundlePath(System.IO.Path.GetDirectoryName(path));
+
+			do
+			{
+				var name = System.IO.Path.GetFileName(path);
+	
+				if (string.IsNullOrEmpty(name)) return DetectBundlePath(System.IO.Path.GetDirectoryName(path));
+	
+				if (name.Contains(".")) return path;
+
+				path = System.IO.Path.GetDirectoryName(path);
+			}
+			while (!string.IsNullOrEmpty(path));
+
+			return null;
+		}
+
+		private static Bundle GetAssemblyBundle(Assembly assembly)
+		{
+			return FromPath(DetectBundlePath(assembly.Location));
+		}
 		
 		IntPtr nativePointer;
 		bool disposed;
 		
-		public Bundle()
+		private Bundle()
 		{
 			ObjectiveC.EnsureAppKitFrameworkIsLoaded();
 			nativePointer = ObjectiveC.AllocObject("NSBundle");
@@ -92,13 +141,14 @@ namespace System.MacOS.AppKit
 			else
 				return null; // Unknown or unhandled data type
 		}
-		
-		public string Name
+
+		internal IntPtr GetDictionaryCopy()
 		{
-			get
-			{
-				return GetValueForKey("CFBundleName") as string;
-			}
+			return ObjectiveC.MutableCopy(SafeNativeMethods.objc_msgSend(NativePointer, Selectors.InfoDictionary));
 		}
+		
+		public string Name { get { return GetValueForKey("CFBundleName") as string; } }
+
+		public string Path { get { return SafeNativeMethods.objc_msgSend_get_String(NativePointer, Selectors.BundlePath); } }
 	}
 }

@@ -6,25 +6,6 @@ namespace System.MacOS
 {
 	partial class SafeNativeMethods
 	{
-		public enum ProcessApplicationTransformState
-		{
-			ProcessTransformToForegroundApplication = 1
-		}
-		
-		public enum OSResultCode
-		{
-			ProcessNotFound = -600,
-			MemoryFragmentationError = -601,
-			ApplicationModeError = -602,
-			ProtocolError = -603,
-			HardwareConfigurationError = -604,
-			ApplicationMemoryFullErrError = -605,
-			ApplicationIsDaemon = -606,
-			WrongApplicationPlatform = -875,
-			ApplicationVersionTooOld = -876,
-			NotAppropriateForClassic = -877
-		}
-				
 		public enum BackingStoreType
 		{
 			BackingStoreRetained = 0,
@@ -38,15 +19,13 @@ namespace System.MacOS
 			TerminateLater = 2
 		}
 
-		[DllImport(AppKit)]
-		[SuppressUnmanagedCodeSecurity]
-		public static extern OSResultCode GetCurrentProcess (out long psn);
-		[DllImport(AppKit)]
-		[SuppressUnmanagedCodeSecurity]
-		public static extern OSResultCode TransformProcessType ([In] ref long psn, ProcessApplicationTransformState type);
-		[DllImport(AppKit)]
-		[SuppressUnmanagedCodeSecurity]
-		public static extern OSResultCode SetFrontProcess ([In] ref long psn);
+		public struct NSRange
+		{
+			public IntPtr location;
+			public IntPtr length;
+		}
+
+		public static readonly IntPtr NSNotFound = ObjectiveC.LP64 ? (IntPtr)Int64.MaxValue : (IntPtr)Int32.MaxValue;
 
 		[DllImport(AppKit)]
 		[SuppressUnmanagedCodeSecurity]

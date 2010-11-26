@@ -1,4 +1,5 @@
 using System;
+using System.MacOS.CoreGraphics;
 
 namespace System.MacOS.AppKit
 {
@@ -11,13 +12,37 @@ namespace System.MacOS.AppKit
 		{
 			static class controlView { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("controlView"); }
 			static class setControlView { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setControlView:"); }
+//			static class controlSize { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("controlSize"); }
+			static class setControlSize { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setControlSize:"); }
 			
 			public static IntPtr ControlView { get { return controlView.SelectorHandle; } }
 			public static IntPtr SetControlView { get { return setControlView.SelectorHandle; } }
+//			public static IntPtr ControlSize { get { return controlSize.SelectorHandle; } }
+			public static IntPtr SetControlSize { get { return setControlSize.SelectorHandle; } }
 		}
 		
 		#endregion
-		
+
+		#region NSCell interop
+
+		//[SelectorStub("controlSize")]
+		private static IntPtr GetControlSize(IntPtr self, IntPtr sel)
+		{
+			var cell = GetInstance(self) as Cell /*?? control.Cell*/;
+
+			return (IntPtr)cell.controlSize;
+		}
+
+		//[SelectorStub("setControlSize:")]
+		private static void SetControlSize(IntPtr self, IntPtr sel, IntPtr size)
+		{
+			var cell = GetInstance(self) as Cell /*?? control.Cell*/;
+
+			cell.ControlSize = (ControlSize)size;
+		}
+
+		#endregion
+
 		#region Cache
 		
 		static readonly NativeObjectCache<Cell> cellList = new NativeObjectCache<Cell>(c => c.NativePointer);
@@ -29,9 +54,12 @@ namespace System.MacOS.AppKit
 		internal SafeNativeMethods.objc_super super;
 		private bool disposed;
 		private Menu menu;
-		private LayoutDirection layoutDirection;
+		private ControlSize controlSize;
 		private object value;
-		
+		#if MACOSX_10_6
+		private LayoutDirection layoutDirection;
+		#endif
+
 		public Cell()
 		{
 		}
@@ -101,6 +129,21 @@ namespace System.MacOS.AppKit
 			// Here we use super.Receiver directly, as the value has to be directly fetched from the native NSCell anyway
 			get { return View.GetInstance(SafeNativeMethods.objc_msgSend(super.Receiver, Selectors.ControlView)) as Control; }
 		}
+
+		public ControlSize ControlSize
+		{
+			get { return controlSize; }
+			set
+			{
+				if (value != controlSize)
+				{
+					controlSize = value;
+
+					if (Created)
+						SafeNativeMethods.objc_msgSendSuper(ref super, Selectors.SetControlSize, (IntPtr)controlSize);
+				}
+			}
+		}
 		
 		public Menu Menu
 		{
@@ -142,7 +185,7 @@ namespace System.MacOS.AppKit
 					
 					if (Created)
 					{
-						switch (this.value != null ? Type.GetTypeCode(this.value.GetType()) : TypeCode.DBNull)
+						switch (Type.GetTypeCode((this.value ?? DBNull.Value).GetType()))
 						{
 							case TypeCode.String:
 								SafeNativeMethods.objc_msgSend_set_String(NativePointer, CommonSelectors.SetStringValue, this.value as string);
@@ -159,6 +202,16 @@ namespace System.MacOS.AppKit
 		}
 		
 		public object Tag { get; set; }
+
+		public Size Measure(Size availableSize)
+		{
+			return MeasureOverride(availableSize);
+		}
+
+		public virtual Size MeasureOverride(Size availableSize)
+		{
+			return new Size(10000, 10000);
+		}
 		
 		public virtual object Clone()
 		{

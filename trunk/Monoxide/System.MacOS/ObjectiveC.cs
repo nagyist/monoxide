@@ -68,6 +68,8 @@ namespace System.MacOS
 			static class dealloc { public static readonly IntPtr SelectorHandle = GetSelector("dealloc"); }
 			static class copy { public static readonly IntPtr SelectorHandle = GetSelector("copy"); }
 			static class copyWithZone { public static readonly IntPtr SelectorHandle = GetSelector("copyWithZone:"); }
+			static class mutableCopy { public static readonly IntPtr SelectorHandle = GetSelector("mutableCopy"); }
+			static class mutableCopyWithZone { public static readonly IntPtr SelectorHandle = GetSelector("mutableCopyWithZone"); }
 			static class description { public static readonly IntPtr SelectorHandle = GetSelector("description"); }
 			static class hash { public static readonly IntPtr SelectorHandle = GetSelector("hash"); }
 			static class isEqual { public static readonly IntPtr SelectorHandle = GetSelector("isEqual:"); }
@@ -87,7 +89,7 @@ namespace System.MacOS
 			static class @object { public static readonly IntPtr SelectorHandle = GetSelector("object"); }
 			static class userInfo { public static readonly IntPtr SelectorHandle = GetSelector("userInfo"); }
 			
-			// NSString,
+			// NSString
 			static class length { public static readonly IntPtr SelectorHandle = GetSelector("length"); }
 			// NSURL
 			static class urlWithString { public static readonly IntPtr SelectorHandle = GetSelector("URLWithString:"); }
@@ -97,7 +99,8 @@ namespace System.MacOS
 			static class arrayWithObjectsCount { public static readonly IntPtr SelectorHandle = GetSelector("arrayWithObjects:count:"); }
 			// NSDictionary
 			static class objectForKey { public static readonly IntPtr SelectorHandle = GetSelector("objectForKey:"); }
-			
+			static class setObjectForKey { public static readonly IntPtr SelectorHandle = GetSelector("setObject:forKey:"); }
+
 			public static IntPtr Alloc { get { return alloc.SelectorHandle; } }
 			public static IntPtr Init { get { return init.SelectorHandle; } }
 			public static IntPtr Retain { get { return retain.SelectorHandle; } }
@@ -106,6 +109,8 @@ namespace System.MacOS
 			public static IntPtr Dealloc { get { return dealloc.SelectorHandle; } }
 			public static IntPtr Copy { get { return copy.SelectorHandle; } }
 			public static IntPtr CopyWithZone { get { return copyWithZone.SelectorHandle; } }
+			public static IntPtr MutableCopy { get { return mutableCopy.SelectorHandle; } }
+			public static IntPtr MutableCopyWithZone { get { return mutableCopyWithZone.SelectorHandle; } }
 			public static IntPtr Description { get { return description.SelectorHandle; } }
 			public static IntPtr Hash { get { return hash.SelectorHandle; } }
 			public static IntPtr IsEqual { get { return isEqual.SelectorHandle; } }
@@ -123,16 +128,17 @@ namespace System.MacOS
 			public static IntPtr Name { get { return name.SelectorHandle; } }
 			public static IntPtr Object { get { return @object.SelectorHandle; } }
 			public static IntPtr UserInfo { get { return userInfo.SelectorHandle; } }
-			
+			// NSString
 			public static IntPtr Length { get { return length.SelectorHandle; } }
-			
+			// NSURL
 			public static IntPtr UrlWithString { get { return urlWithString.SelectorHandle; } }
-			
+			// NSDate
 			public static IntPtr DistantFuture { get { return distantFuture.SelectorHandle; } }
-			
+			// NSArray
 			public static IntPtr ArrayWithObjectsCount { get { return arrayWithObjectsCount.SelectorHandle; } }
-			
+			// NSDictionary
 			public static IntPtr ObjectForKey { get { return objectForKey.SelectorHandle; } }
+			public static IntPtr SetObjectForKey { get { return setObjectForKey.SelectorHandle; } }
 		}
 		
 		#endregion
@@ -151,6 +157,30 @@ namespace System.MacOS
 		private static readonly IntPtr NSString_getCharacters_range = GetSelector("getCharacters:range:");
 		
 		#endregion
+
+		#if ENABLE_PROCESS_TWEAKS
+		private static void TweakProcessPath()
+		{
+			// The following code is a hack for the process path… And thus, for the bundle path.
+			Environment.SetEnvironmentVariable("CFProcessPath", System.Reflection.Assembly.GetEntryAssembly().Location);
+			// Should the internals of CoreFoundation ever change, this code may not work in a future version.
+			// In order to prevent this to break the whole library, this code is wrapped in a try/catch block.
+			// So, if this doesn't work anymore, we'll just lose a small bit of functionnality.
+			try
+			{
+				// Get the current process path pointer… (It may already be correct, but it may not be…)
+				IntPtr processPath = SafeNativeMethods._CFGetProcessPath();
+				// Erase the pointer (this will cause a small memory leak…)
+				unsafe { *((sbyte**)processPath) = null; }
+				// Query the process path again
+				processPath = SafeNativeMethods._CFGetProcessPath();
+				// Query the main bundle
+				SafeNativeMethods.CFBundleGetMainBundle();
+			}
+			catch { }
+			finally { Environment.SetEnvironmentVariable("CFProcessPath", null); }
+		}
+		#endif
 		
 		public static bool LP64 { get { return sizeof(int) < IntPtr.Size; } }
 		
@@ -372,6 +402,16 @@ namespace System.MacOS
 				throw new ArgumentNullException("object");
 			
 			return SafeNativeMethods.objc_msgSend(SafeNativeMethods.objc_msgSend(@object, Selectors.Retain), Selectors.AutoRelease);
+		}
+
+		[DebuggerStepThroughAttribute]
+		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+		public static IntPtr MutableCopy(IntPtr @object)
+		{
+			if (@object == IntPtr.Zero)
+				throw new ArgumentNullException("object");
+			
+			return SafeNativeMethods.objc_msgSend(@object, Selectors.MutableCopy);
 		}
 		
 		[ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
