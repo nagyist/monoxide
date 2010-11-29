@@ -24,19 +24,24 @@ namespace MonoDocumentationBrowser
 			scrollView = new ScrollView() { Scrollers = Axis.Both };
 			scrollView.DocumentView = treeView;
 			webView = new WebView();
-			splitView = new SplitView()
-			{
-				Margin = new Thickness(0, 0, 0, Window.SmallBottomBarHeight),
-				Width = double.NaN,
-				Height = double.NaN,
-				//Bounds = new Rectangle(0, Window.SmallBottomBarHeight, 480, 360 - Window.SmallBottomBarHeight),
-				//LayoutOptions = LayoutOptions.Width | LayoutOptions.Height,
-				Orientation = Orientation.Horizontal,
-				DividerStyle = DividerStyle.Thin,
-			};
-			splitView.Children.Add(scrollView);
-			splitView.Children.Add(webView);
-			Content.Children.Add(splitView);
+//			splitView = new SplitView()
+//			{
+//				Margin = new Thickness(0, 0, 0, Window.SmallBottomBarHeight),
+//				Width = double.NaN,
+//				Height = double.NaN,
+//				Orientation = Orientation.Horizontal,
+//				DividerStyle = DividerStyle.Thin,
+//			};
+//			splitView.Children.Add(scrollView);
+//			splitView.Children.Add(webView);
+//			Content.Children.Add(splitView);
+			scrollView.HorizontalAlignment = HorizontalAlignment.Left;
+			scrollView.Width = 250;
+			scrollView.Margin = new Thickness(4, 4, 4, Window.SmallBottomBarHeight + 4);
+			webView.HorizontalAlignment = HorizontalAlignment.Right;
+			webView.Margin = new Thickness(258, 4, 4, Window.SmallBottomBarHeight + 4);
+			Content.Children.Add(scrollView);
+			Content.Children.Add(webView);
 			CreateToolbarTemplate();
 			Toolbar = new Toolbar() { Customizable = true, TemplateName = "Main" };
 			BottomBarHeight = Window.SmallBottomBarHeight;
@@ -77,15 +82,15 @@ namespace MonoDocumentationBrowser
 			
 			try
 			{
-				url = new Uri(node.URL);
-				Console.WriteLine("Visiting URL: {0}", url);
+				Console.WriteLine("Visiting URL: {0}", node.PublicUrl);
+				url = new Uri(node.PublicUrl);
 			}
-			catch { }
+			catch (Exception ex) { Console.WriteLine(ex); }
 			
 			if (node.tree.HelpSource != null)
-				htmlContent = node.tree.HelpSource.GetText(node.URL, out node);
+				htmlContent = node.tree.HelpSource.GetText(node.PublicUrl, out node);
 			else
-				htmlContent = rootTree.RenderUrl(node.URL, out node);
+				htmlContent = rootTree.RenderUrl(node.PublicUrl, out node);
 			
 			webView.MainFrame.SetHtmlContent(htmlContent, new Uri("http://toto/"));
 		}

@@ -8,32 +8,9 @@ namespace System.MacOS.AppKit
 	{
 		#region DataSource Management
 		
-		static class DataSource
+		struct DataSource
 		{
-			public static readonly IntPtr NativePointer = CreateOutlineViewDataSource();
-			
-			delegate IntPtr ChildOfItemDelegate(IntPtr self, IntPtr _cmd, IntPtr outlineView, IntPtr index, IntPtr item);
-			delegate bool IsItemExpandableDelegate(IntPtr self, IntPtr _cmd, IntPtr outlineView, IntPtr item);
-			delegate IntPtr NumberOfChildrenOfItemDelegate(IntPtr self, IntPtr _cmd, IntPtr outlineView, IntPtr item);
-			delegate IntPtr ObjectValueForTableColumnByItemDelegate(IntPtr self, IntPtr _cmd, IntPtr outlineView, IntPtr tableColumn, IntPtr item);
-			delegate void SetObjectValueForTableColumnByItemDelegate(IntPtr self, IntPtr _cmd, IntPtr outlineView, IntPtr @object, IntPtr tableColumn, IntPtr item);
-			
-			private static IntPtr CreateOutlineViewDataSource()
-			{
-				// Documentation here: http://developer.apple.com/mac/library/documentation/Cocoa/Reference/ObjCRuntimeRef/Reference/reference.html#//apple_ref/c/func/objc_allocateClassPair
-				var dataSourceClass = SafeNativeMethods.objc_allocateClassPair(ObjectiveC.Classes.NSObject, "CLROutlineViewDataSource", IntPtr.Zero);
-				// Add a method to the runtime-created class for each of the delegated event we want to intercept
-				SafeNativeMethods.class_addMethod(dataSourceClass, ObjectiveC.GetSelector("outlineView:child:ofItem:"), (ChildOfItemDelegate)ChildOfItem, ObjectiveC.LP64 ? "@@:@L@" : "@@:@I@");
-				SafeNativeMethods.class_addMethod(dataSourceClass, ObjectiveC.GetSelector("outlineView:isItemExpandable:"), (IsItemExpandableDelegate)IsItemExpandable, "c@:@@");
-				SafeNativeMethods.class_addMethod(dataSourceClass, ObjectiveC.GetSelector("outlineView:numberOfChildrenOfItem:"), (NumberOfChildrenOfItemDelegate)NumberOfChildrenOfItem, ObjectiveC.LP64 ? "L@:@@" : "I@:@@");
-				SafeNativeMethods.class_addMethod(dataSourceClass, ObjectiveC.GetSelector("outlineView:objectValueForTableColumn:byItem:"), (ObjectValueForTableColumnByItemDelegate)GetObjectValueForTableColumnByItem, "@@:@@@");
-				SafeNativeMethods.class_addMethod(dataSourceClass, ObjectiveC.GetSelector("outlineView:setObjectValue:forTableColumn:byItem:"), (SetObjectValueForTableColumnByItemDelegate)SetObjectValueForTableColumnByItem, "v@:@@@@");
-				// Register the newly created class
-				SafeNativeMethods.objc_registerClassPair(dataSourceClass);
-				// Return an allocated and initialized a instance of our newly created delegate class
-				return SafeNativeMethods.objc_msgSend(ObjectiveC.AllocObject(dataSourceClass), ObjectiveC.Selectors.Init);
-			}
-			
+			[SelectorStubAttribute("outlineView:child:ofItem:", Kind = StubKind.ClassMandatory)]
 			private static IntPtr ChildOfItem(IntPtr self, IntPtr _cmd, IntPtr outlineView, IntPtr index, IntPtr item)
 			{
 				var outlineViewControl = View.GetInstance(outlineView) as OutlineViewBase<TCell>;
@@ -45,6 +22,7 @@ namespace System.MacOS.AppKit
 				return ObjectiveC.GetNativeObject(outlineViewControl.GetItemChild(@object, checked((int)index)));
 			}
 			
+			[SelectorStubAttribute("outlineView:isItemExpandable:", Kind = StubKind.ClassMandatory)]
 			private static bool IsItemExpandable(IntPtr self, IntPtr _cmd, IntPtr outlineView, IntPtr item)
 			{
 				var outlineViewControl = View.GetInstance(outlineView) as OutlineViewBase<TCell>;
@@ -56,6 +34,7 @@ namespace System.MacOS.AppKit
 				return outlineViewControl.IsItemExpandable(@object);
 			}
 			
+			[SelectorStubAttribute("outlineView:numberOfChildrenOfItem:", Kind = StubKind.ClassMandatory)]
 			private static IntPtr NumberOfChildrenOfItem(IntPtr self, IntPtr _cmd, IntPtr outlineView, IntPtr item)
 			{
 				var outlineViewControl = View.GetInstance(outlineView) as OutlineViewBase<TCell>;
@@ -67,19 +46,23 @@ namespace System.MacOS.AppKit
 				return checked((IntPtr)outlineViewControl.GetItemChildCount(@object));
 			}
 			
+			[SelectorStubAttribute("outlineView:objectValueForTableColumn:byItem:", Kind = StubKind.ClassMandatory)]
 			private static IntPtr GetObjectValueForTableColumnByItem(IntPtr self, IntPtr _cmd, IntPtr outlineView, IntPtr tableColumn, IntPtr item)
 			{
 				var outlineViewControl = View.GetInstance(outlineView) as OutlineViewBase<TCell>;
 				
 				if (outlineViewControl == null) return IntPtr.Zero;
+
+				var column = TableColumn<TCell>.GetInstance(tableColumn) as TableColumn<TCell>;
 				
 				var @object = ObjectiveC.GetManagedObject(item);
-				
 				if (@object == null) return IntPtr.Zero;
-				
-				return ObjectiveC.AutoReleaseObject(ObjectiveC.StringToNativeString(outlineViewControl.GetItemText(@object)));
+
+				var text = outlineViewControl.GetItemText(@object, column);
+				return text != null ? ObjectiveC.AutoReleaseObject(ObjectiveC.StringToNativeString(text)) : IntPtr.Zero;
 			}
 			
+			[SelectorStubAttribute("outlineView:setObjectValue:forTableColumn:byItem:", Kind = StubKind.ClassMandatory)]
 			private static void SetObjectValueForTableColumnByItem(IntPtr self, IntPtr _cmd, IntPtr outlineView, IntPtr @object, IntPtr tableColumn, IntPtr item)
 			{
 			}
@@ -89,24 +72,9 @@ namespace System.MacOS.AppKit
 		
 		#region Event Handling & Dispatching
 		
-		static class Delegate
+		struct Delegate
 		{
-			public static readonly IntPtr NativePointer = CreateOutlineViewDelegate();
-			
-			private static IntPtr CreateOutlineViewDelegate()
-			{
-				// Standard notification handler, that will handle most notification and dispatch them apropriately
-				var notificationHandler = (SafeNativeMethods.StandardEventHandler)HandleNotification;
-				// Documentation here: http://developer.apple.com/mac/library/documentation/Cocoa/Reference/ObjCRuntimeRef/Reference/reference.html#//apple_ref/c/func/objc_allocateClassPair
-				var delegateClass = SafeNativeMethods.objc_allocateClassPair(ObjectiveC.Classes.NSObject, "CLROutlineViewDelegate", IntPtr.Zero);
-				// Add a method to the runtime-created class for each of the delegated event we want to intercept
-				SafeNativeMethods.class_addMethod(delegateClass, ObjectiveC.GetSelector("outlineViewSelectionDidChange:"), notificationHandler, "v@:@");
-				// Register the newly created class
-				SafeNativeMethods.objc_registerClassPair(delegateClass);
-				// Return an allocated and initialized a instance of our newly created delegate class
-				return SafeNativeMethods.objc_msgSend(ObjectiveC.AllocObject(delegateClass), ObjectiveC.Selectors.Init);
-			}
-			
+			[SelectorStub("outlineViewSelectionDidChange:", Kind = StubKind.ClassMandatory)]
 			private static void HandleNotification(IntPtr self, IntPtr _cmd, IntPtr aNotification)
 			{
 				var outlineView = GetInstance(ObjectiveC.GetNotificationObject(aNotification)) as OutlineViewBase<TCell>;
@@ -128,9 +96,11 @@ namespace System.MacOS.AppKit
 		{
 			static class itemAtRow { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("itemAtRow:"); }
 			static class rowForItem { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("rowForItem:"); }
+			static class setOutlineTableColumn { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setOutlineTableColumn:"); }
 			
 			public static IntPtr ItemAtRow { get { return itemAtRow.SelectorHandle; } }
 			public static IntPtr RowForItem { get { return rowForItem.SelectorHandle; } }
+			public static IntPtr SetOutlineTableColumn { get { return setOutlineTableColumn.SelectorHandle; } }
 		}
 		
 		#endregion
@@ -140,12 +110,9 @@ namespace System.MacOS.AppKit
 		internal override void OnCreated()
 		{
 			base.OnCreated();
-			var column = SafeNativeMethods.objc_msgSend(ObjectiveC.AllocObject("NSTableColumn"), ObjectiveC.GetSelector("initWithIdentifier:"), IntPtr.Zero);
-			SafeNativeMethods.objc_msgSend_set_String(SafeNativeMethods.objc_msgSend(column, ObjectiveC.GetSelector("headerCell")), ObjectiveC.GetSelector("setStringValue:"), "Topic");
-			SafeNativeMethods.objc_msgSend(NativePointer, ObjectiveC.GetSelector("addTableColumn:"), column);
-			SafeNativeMethods.objc_msgSend(NativePointer, ObjectiveC.GetSelector("setOutlineTableColumn:"), column);
-			SafeNativeMethods.objc_msgSend(NativePointer, CommonSelectors.SetDataSource, DataSource.NativePointer);
-			SafeNativeMethods.objc_msgSend(NativePointer, CommonSelectors.SetDelegate, Delegate.NativePointer);
+			if (Columns.Count > 0) SafeNativeMethods.objc_msgSend(NativePointer, Selectors.SetOutlineTableColumn, Columns[0].NativePointer);
+			SafeNativeMethods.objc_msgSend(NativePointer, CommonSelectors.SetDataSource, ObjectiveC.GetNativeClass(typeof(DataSource), true));
+			SafeNativeMethods.objc_msgSend(NativePointer, CommonSelectors.SetDelegate, ObjectiveC.GetNativeClass(typeof(Delegate), true));
 		}
 		
 		private void HandleSelectionChanged()
@@ -177,11 +144,6 @@ namespace System.MacOS.AppKit
 		protected virtual bool IsGroupItem(object item)
 		{
 			return false;
-		}
-		
-		protected virtual string GetItemText(object item)
-		{
-			return item != null ? item.ToString() : null;
 		}
 		
 		public object GetRowItem(int row)

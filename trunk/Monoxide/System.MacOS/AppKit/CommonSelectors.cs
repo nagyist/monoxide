@@ -46,6 +46,9 @@ namespace System.MacOS
 		static class stringValue { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("stringValue"); }
 		static class setStringValue { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setStringValue:"); }
 		
+		static class objectValue { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("objectValue"); }
+		static class setObjectValue { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setObjectValue:"); }
+
 		static class attributedStringValue { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("attributedStringValue"); }
 		static class setAttributedStringValue { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("setAttributedStringValue:"); }
 
@@ -98,7 +101,9 @@ namespace System.MacOS
 		public static IntPtr SetStringValue { get { return setStringValue.SelectorHandle; } }
 		public static IntPtr AttributedStringValue { get { return attributedStringValue.SelectorHandle; } }
 		public static IntPtr SetAttributedStringValue { get { return setAttributedStringValue.SelectorHandle; } }
-		
+		public static IntPtr ObjectValue { get { return objectValue.SelectorHandle; } }
+		public static IntPtr SetObjectValue { get { return setObjectValue.SelectorHandle; } }
+
 		public static IntPtr ControlView { get { return controlView.SelectorHandle; } }
 		
 		public static IntPtr ClrCommand { get { return clrCommand.SelectorHandle; } }

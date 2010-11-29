@@ -17,12 +17,145 @@ namespace System.MacOS
 		[DllImport(CoreGraphics)]
 		public static extern void CGContextSetStrokeColorWithColor(IntPtr c, IntPtr color);
 
-		[SuppressUnmanagedCodeSecurity]
-		[DllImport(CoreGraphics)]
-		public static extern void CGContextBeginPath(IntPtr context);
+		#region Path Construction
+
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(CoreGraphics)]
 		public static extern void CGContextAddPath(IntPtr context, IntPtr path);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics)]
+		public static extern IntPtr CGContextCopyPath(IntPtr context);
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextMoveToPoint")]
+		private static extern void CGContextMoveToPoint_32(IntPtr c, float x, float y);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextMoveToPoint")]
+		private static extern void CGContextMoveToPoint_64(IntPtr c, double x, double y);
+
+		public static void CGContextMoveToPoint(IntPtr c, double x, double y)
+		{
+			if (ObjectiveC.LP64)
+				CGContextMoveToPoint_64(c, x, y);
+			else
+				CGContextMoveToPoint_32(c, (float)x, (float)y);
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddLineToPoint")]
+		private static extern void CGContextAddLineToPoint_32(IntPtr c, float x, float y);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddLineToPoint")]
+		private static extern void CGContextAddLineToPoint_64(IntPtr c, double x, double y);
+
+		public static void CGContextAddLineToPoint(IntPtr c, double x, double y)
+		{
+			if (ObjectiveC.LP64)
+				CGContextAddLineToPoint_64(c, x, y);
+			else
+				CGContextAddLineToPoint_32(c, (float)x, (float)y);
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddQuadCurveToPoint")]
+		private static extern void CGContextAddQuadCurveToPoint_32(IntPtr c, float cpx, float cpy, float x, float y);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddQuadCurveToPoint")]
+		private static extern void CGContextAddQuadCurveToPoint_64(IntPtr c, double cpx, double cpy, double x, double y);
+
+		public static void CGContextAddQuadCurveToPoint(IntPtr c, double cpx, double cpy, double x, double y)
+		{
+			if (ObjectiveC.LP64)
+				CGContextAddQuadCurveToPoint_64(c, cpx, cpy, x, y);
+			else
+				CGContextAddQuadCurveToPoint_32(c, (float)cpx, (float)cpy, (float)x, (float)y);
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddCurveToPoint")]
+		private static extern void CGContextAddCurveToPoint_32(IntPtr c, float cpx1, float cpy1, float cpx2, float cpy2, float x, float y);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddCurveToPoint")]
+		private static extern void CGContextAddCurveToPoint_64(IntPtr c, double cpx1, double cpy1, double cpx2, double cpy2, double x, double y);
+
+		public static void CGContextAddCurveToPoint(IntPtr c, double cpx1, double cpy1, double cpx2, double cpy2, double x, double y)
+		{
+			if (ObjectiveC.LP64)
+				CGContextAddCurveToPoint_64(c, cpx1, cpy1, cpx2, cpy2, x, y);
+			else
+				CGContextAddCurveToPoint_32(c, (float)cpx1, (float)cpy1, (float)cpx2, (float)cpy2, (float)x, (float)y);
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddArc")]
+		private static extern void CGContextAddArc_32(IntPtr c, float x, float y, float radius, float startAngle, float endAngle, [MarshalAs(UnmanagedType.I4)] bool clockwise);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddArc")]
+		private static extern void CGContextAddArc_64(IntPtr c, double x, double y, double radius, double startAngle, double endAngle, [MarshalAs(UnmanagedType.I4)] bool clockwise);
+
+		public static void CGContextAddArc(IntPtr c, double x, double y, double radius, double startAngle, double endAngle, bool clockwise)
+		{
+			if (ObjectiveC.LP64)
+				CGContextAddArc_64(c, x, y, radius, startAngle, endAngle, clockwise);
+			else
+				CGContextAddArc_32(c, (float)x, (float)y, (float)radius, (float)startAngle, (float)endAngle, clockwise);
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddArcToPoint")]
+		private static extern void CGContextAddArcToPoint_32(IntPtr c, float x1, float y1, float x2, float y2, float radius);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddArcToPoint")]
+		private static extern void CGContextAddArcToPoint_64(IntPtr c, double x1, double y1, double x2, double y2, double radius);
+
+		public static void CGContextAddArcToPoint(IntPtr c, double x1, double y1, double x2, double y2, double radius)
+		{
+			if (ObjectiveC.LP64)
+				CGContextAddArcToPoint_64(c, x1, y1, x2, y2, radius);
+			else
+				CGContextAddArcToPoint_32(c, (float)x1, (float)y1, (float)x2, (float)y2, (float)radius);
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddRect")]
+		private static extern void CGContextAddRect_32(IntPtr c, RectangleF rect);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddRect")]
+		private static extern void CGContextAddRect_64(IntPtr c, Rectangle rect);
+
+		public static void CGContextAddRect(IntPtr c, Rectangle rect)
+		{
+			if (ObjectiveC.LP64)
+				CGContextAddRect_64(c, rect);
+			else
+				CGContextAddRect_32(c, rect);
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddEllipseInRect")]
+		private static extern void CGContextAddEllipseInRect_32(IntPtr c, RectangleF rect);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGContextAddEllipseInRect")]
+		private static extern void CGContextAddEllipseInRect_64(IntPtr c, Rectangle rect);
+
+		public static void CGContextAddEllipseInRect(IntPtr c, Rectangle rect)
+		{
+			if (ObjectiveC.LP64)
+				CGContextAddEllipseInRect_64(c, rect);
+			else
+				CGContextAddEllipseInRect_32(c, rect);
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics)]
+		public static extern void CGContextBeginPath(IntPtr c);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics)]
+		public static extern IntPtr CGContextClosePath(IntPtr c);
+
+		#endregion
+
+		#region Path Painting
 
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(CoreGraphics, EntryPoint = "CGContextFillRect")]
@@ -83,6 +216,21 @@ namespace System.MacOS
 			else
 				CGContextStrokeEllipseInRect_32(c, rect);
 		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics)]
+		public static extern void CGContextDrawPath(IntPtr c, PathDrawingMode mode);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics)]
+		public static extern void CGContextEOFillPath(IntPtr c);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics)]
+		public static extern void CGContextFillPath(IntPtr c);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics)]
+		public static extern void CGContextStrokePath(IntPtr c);
+
+		#endregion
 
 		#endregion
 
@@ -177,22 +325,64 @@ namespace System.MacOS
 
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(CoreGraphics, EntryPoint = "CGPathLineToPoint")]
-		private static extern void CGPathLineToPoint_32(IntPtr path, IntPtr m, float x, float y);
+		private static extern void CGPathAddLineToPoint_32(IntPtr path, IntPtr m, float x, float y);
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(CoreGraphics, EntryPoint = "CGPathLineToPoint")]
-		private static extern void CGPathLineToPoint_64(IntPtr path, IntPtr m, double x, double y);
+		private static extern void CGPathAddLineToPoint_64(IntPtr path, IntPtr m, double x, double y);
 
-		public static void CGPathLineToPoint(IntPtr path, IntPtr m, double x, double y)
+		public static void CGPathAddLineToPoint(IntPtr path, IntPtr m, double x, double y)
 		{
 			if (ObjectiveC.LP64)
-				CGPathLineToPoint_64(path, m, x, y);
+				CGPathAddLineToPoint_64(path, m, x, y);
 			else
-				CGPathLineToPoint_32(path, m, (float)x, (float)y);
+				CGPathAddLineToPoint_32(path, m, (float)x, (float)y);
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGPathAddQuadCurveToPoint")]
+		private static extern void CGPathAddQuadCurveToPoint_32(IntPtr path, IntPtr m, float cpx, float cpy, float x, float y);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGPathAddQuadCurveToPoint")]
+		private static extern void CGPathAddQuadCurveToPoint_64(IntPtr path, IntPtr m, double cpx, double cpy, double x, double y);
+
+		public static void CGPathAddQuadCurveToPoint(IntPtr path, IntPtr m, double cpx, double cpy, double x, double y)
+		{
+			if (ObjectiveC.LP64)
+				CGPathAddQuadCurveToPoint_64(path, m, cpx, cpy, x, y);
+			else
+				CGPathAddQuadCurveToPoint_32(path, m, (float)cpx, (float)cpy, (float)x, (float)y);
+		}
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGPathAddCurveToPoint")]
+		private static extern void CGPathAddCurveToPoint_32(IntPtr path, IntPtr m, float cpx1, float cpy1, float cpx2, float cpy2, float x, float y);
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics, EntryPoint = "CGPathAddCurveToPoint")]
+		private static extern void CGPathAddCurveToPoint_64(IntPtr path, IntPtr m, double cpx1, double cpy1, double cpx2, double cpy2, double x, double y);
+
+		public static void CGPathAddCurveToPoint(IntPtr path, IntPtr m, double cpx1, double cpy1, double cpx2, double cpy2, double x, double y)
+		{
+			if (ObjectiveC.LP64)
+				CGPathAddCurveToPoint_64(path, m, cpx1, cpy1, cpx2, cpy2, x, y);
+			else
+				CGPathAddCurveToPoint_32(path, m, (float)cpx1, (float)cpy1, (float)cpx2, (float)cpy2, (float)x, (float)y);
 		}
 
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(CoreGraphics)]
-		private static extern IntPtr CGPathCloseSubpath(IntPtr path);
+		public static extern IntPtr CGPathCloseSubpath(IntPtr path);
+
+		public struct CGPathElement
+		{
+			public PathCommand type;
+			public IntPtr points;
+		}
+
+		public delegate void CGPathApplierFunction(IntPtr info, [In, MarshalAs(UnmanagedType.LPStruct)] ref CGPathElement element);
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(CoreGraphics)]
+		public static extern IntPtr CGPathApply(IntPtr path, IntPtr info, [MarshalAs(UnmanagedType.FunctionPtr)] CGPathApplierFunction function);
 
 		#endregion
 	}

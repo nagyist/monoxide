@@ -635,9 +635,9 @@ namespace System.MacOS.AppKit
 			internal set
 			{
 				if (value != null && owner != null)
-					throw new InvalidOperationException(Localization.GetExceptionText(""));
+					throw new InvalidOperationException(Localization.GetExceptionText("ViewOwned"));
 				if (value == null && owner == null)
-					throw new InvalidOperationException();
+					throw new InvalidOperationException(Localization.GetExceptionText("InternalError"));
 				owner = value;
 			}
 		}

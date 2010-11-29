@@ -88,7 +88,7 @@ namespace System.MacOS.CoreGraphics
 
 		protected virtual void Dispose(bool disposing)
 		{
-			IntPtr nativePointer = Interlocked.Exchange(ref this.nativePointer, IntPtr.Zero);
+			var nativePointer = Interlocked.Exchange(ref this.nativePointer, IntPtr.Zero);
 			if (nativePointer != IntPtr.Zero)
 				SafeNativeMethods.CFRelease(nativePointer);
 			disposed = true;

@@ -120,6 +120,25 @@ namespace TestApplication
 			e.Context.FillRectangle(6 * paintedView.ActualWidth / 8, paintedView.ActualHeight / 4, paintedView.ActualWidth / 8, paintedView.ActualHeight / 2);
 			e.Context.FillColor = new RGBColor(1, 1, 0, 1);
 			e.Context.FillEllipse(3 * paintedView.ActualWidth / 8, paintedView.ActualHeight / 8, paintedView.ActualWidth / 4, 6 * paintedView.ActualHeight / 8);
+			e.Context.StrokeColor = new RGBColor(0, 0, 0, 1);
+			e.Context.FillColor = new RGBColor(1, 1, 1, 1);
+			e.Context.BeginPath();
+			e.Context.MoveTo(10, 20);
+			e.Context.AddArcTo(10, 10, 20, 10, 10);
+			e.Context.AddLineTo(40, 10);
+			e.Context.AddArcTo(50, 10, 50, 20, 10);
+			e.Context.AddLineTo(50, 40);
+			e.Context.AddArcTo(50, 50, 40, 50, 10);
+			e.Context.AddLineTo(20, 50);
+			e.Context.AddArcTo(10, 50, 10, 40, 10);
+			e.Context.ClosePath();
+			e.Context.DrawPath(PathDrawingMode.FillStroke);
+			e.Context.FillColor = new RGBColor(0.1, 0.1, 0.1, 0.5);
+			if (paintedView.ActualWidth > 40 && paintedView.ActualHeight > 40)
+			{
+				var half = paintedView.ActualWidth / 2;
+				e.Context.FillRoundedRectangle(new Rectangle(half - 40, paintedView.ActualHeight / 16, 80, 14 * paintedView.ActualHeight / 16), 20);
+			}
 		}
 		
 		public bool CanClose { get { return checkBox.Checked; } }

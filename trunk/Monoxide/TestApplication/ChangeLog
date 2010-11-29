@@ -1,3 +1,13 @@
+2010-11-29  Fabien  <goldencrystal@gmail.com>
+
+	* MainWindow.cs: Testing the new path drawing capabilities…
+	And they work as expected (as expected ! ;)
+
+	* PreferencesPanel.cs: Testing the new "Cocoa" PropertyGrid
+	implementation. Not very useful but promising.
+
+	* finalize.sh: bugfix
+
 2010-11-26  Fabien  <goldencrystal@gmail.com>
 
 	* MainWindow.cs: Updated for the new dll version

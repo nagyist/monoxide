@@ -178,6 +178,13 @@
     <Compile Include="SafeNativeMethods.CoreServices.cs" />
     <Compile Include="NSDictionary.cs" />
     <Compile Include="OSVersion.cs" />
+    <Compile Include="AppKit\ColumnSizingOptions.cs" />
+    <Compile Include="CoreGraphics\TextDrawingMode.cs" />
+    <Compile Include="CoreGraphics\LineJoin.cs" />
+    <Compile Include="CoreGraphics\InterpolationQuality.cs" />
+    <Compile Include="CoreGraphics\LineCap.cs" />
+    <Compile Include="CoreGraphics\TextEncoding.cs" />
+    <Compile Include="CoreGraphics\PathDrawingMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AppKit\Commands.fr.resx" />
@@ -207,4 +214,12 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <None Include="..\..\..\..\..\..\Volumes\Data\Users\Fabien\Documents\MonoDevelop Projects\Monoxide\System.MacOS\DelayCreatedNativeObject.cs">
+      <Link>DelayCreatedNativeObject.cs</Link>
+    </None>
+    <None Include="..\..\..\..\..\..\Volumes\Data\Users\Fabien\Documents\MonoDevelop Projects\Monoxide\System.MacOS\NativeObject.cs">
+      <Link>NativeObject.cs</Link>
+    </None>
+  </ItemGroup>
 </Project>

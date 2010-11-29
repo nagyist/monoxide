@@ -7,10 +7,14 @@ namespace MonoDocumentationBrowser
 	public class DocTreeView : OutlineViewBase<TextFieldCell>
 	{
 		Tree tree;
+		TableColumn mainColumn;
 		
 		public DocTreeView(Tree tree)
 		{
 			this.tree = tree;
+			mainColumn = new TableColumn();
+			mainColumn.HeaderCell.Value = "Topic";
+			Columns.Add(mainColumn);
 		}
 		
 		protected override object GetItemChild(object item, int index)
@@ -40,7 +44,7 @@ namespace MonoDocumentationBrowser
 			return node.Nodes.Count != 0;
 		}
 		
-		protected override string GetItemText (object item)
+		protected override string GetItemText (object item, TableColumn<TextFieldCell> column)
 		{
 			return (item as Node ?? tree).Caption;
 		}

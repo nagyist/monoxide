@@ -56,8 +56,6 @@ namespace System.MacOS.AppKit
 			{
 				lock (cell.segmentList)
 				{
-					if (item.Cell != null)
-						throw new InvalidOperationException(Localization.GetExceptionText("SegmentInUse"));
 					item.Cell = cell;
 					if (cell.segmentList.Count == 0) item.Selected = true;
 					cell.segmentList.Add(item);
@@ -69,8 +67,6 @@ namespace System.MacOS.AppKit
 			{
 				lock (cell.segmentList)
 				{
-					if (item.Cell != null)
-						throw new InvalidOperationException(Localization.GetExceptionText("SegmentInUse"));
 					item.Cell = cell;
 					if (cell.segmentList.Count == 0) item.Selected = true;
 					cell.segmentList.Insert(index, item);

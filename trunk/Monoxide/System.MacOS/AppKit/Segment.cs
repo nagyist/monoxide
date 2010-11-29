@@ -5,6 +5,7 @@ namespace System.MacOS.AppKit
 {
 	public class Segment : ICloneable, INotifyPropertyChanged
 	{
+		private SegmentedCell cell;
 		private string label;
 		private string toolTip;
 		private Image image;
@@ -14,7 +15,7 @@ namespace System.MacOS.AppKit
 		private bool selected;
 		private bool enabled = true;
 		private double width;
-		
+
 		public event EventHandler Click;
 		public event PropertyChangedEventHandler PropertyChanged;
 		
@@ -145,8 +146,19 @@ namespace System.MacOS.AppKit
 		
 		/// <summary>Gets or sets the cell containing this segment.</summary>
 		/// <remarks>This property is internal and thus, no notification is sent when its value is changed.</remarks>
-		internal SegmentedCell Cell { get; set; }
-		
+		internal SegmentedCell Cell
+		{
+			get { return cell; }
+			set
+			{
+				if (value != null && cell != null)
+					throw new InvalidOperationException(Localization.GetExceptionText("SegmentOwned"));
+				if (value == null && cell == null)
+					throw new InvalidOperationException(Localization.GetExceptionText("InternalError"));
+				cell = value;
+			}
+		}
+
 		/// <summary>Sets the selected property internally.</summary>
 		/// <param name="value">A <see cref="System.Boolean"/> indicating the new selection status.</param>
 		/// <remarks>
