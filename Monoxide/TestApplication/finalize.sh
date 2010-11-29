@@ -1,2 +1,2 @@
 #!/bin/sh
-cp *.dll *.mdb MacOSTest.app/Contents/MacOS/
+cp *.exe *.dll *.mdb MacOSTest.app/Contents/MacOS/

@@ -104,6 +104,12 @@ namespace System.MacOS
 				SafeNativeMethods.objc_msgSendSuper(ref super, _cmd);
 			}
 		}
+
+		private static string GetNestedName(Type type)
+		{
+			if (!type.IsNested) return type.Name;
+			else return GetNestedName(type.DeclaringType) + type.Name;
+		}
 		
 		/// <summary>Gets a native Objective-C class for the specified CLR type.</summary>
 		/// <param name="type">The <see cref="Type"/> for which to provide an Objective-C class.</param>
@@ -275,10 +281,11 @@ namespace System.MacOS
 			
 			if (requiredSelectors.Count > 0 || staticSelectors.Count > 0)
 			{
-				var className = "CLR" + type.Name;
+				var nestedName = GetNestedName(type);
+				var className = "CLR" + nestedName;
 				var i = 1;
 				
-				while (bridgeClassNames.Contains(className)) className = "CLR" + type.Name + (++i).ToString();
+				while (bridgeClassNames.Contains(className)) className = "CLR" + nestedName + (++i).ToString();
 				
 				bridgeClassNames.Add(className);
 			
@@ -332,6 +339,8 @@ namespace System.MacOS
 				SafeNativeMethods.class_addMethod(wrapperClass, Selectors.CopyWithZone, (CopyWithZoneDelegate)CopyWithZone, "@@:^{_NSZone=}");
 				SafeNativeMethods.class_addMethod(wrapperClass, Selectors.Dealloc, (DeallocDelegate)Dealloc, "v@:");
 			}
+			// TODO: Link native objects to managed objects with Ivars…
+			//unsafe { SafeNativeMethods.class_addIvar(wrapperClass, "_clrObjectHandle", (IntPtr)sizeof(IntPtr), 0, LP64 ? "L" : "I"); }
 			// Register the newly created class
 			SafeNativeMethods.objc_registerClassPair(wrapperClass);
 					

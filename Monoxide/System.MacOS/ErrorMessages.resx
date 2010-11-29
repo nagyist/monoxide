@@ -153,6 +153,9 @@
   <data name="ViewOwned" xml:space="preserve">
     <value>The view is already owned by another object.</value>
   </data>
+  <data name="ColumnOwned" xml:space="preserve">
+    <value>The column is already owned by another object.</value>
+  </data>
   <data name="SegmentOwned" xml:space="preserve">
     <value>The segment is already owned by a cell.</value>
   </data>
@@ -161,5 +164,8 @@
   </data>
   <data name="ApplicationAlreadyRunning" xml:space="preserve">
     <value>The application is already running.</value>
+  </data>
+  <data name="InternalError" xml:space="preserve">
+    <value>Internal error.</value>
   </data>
 </root>

@@ -153,6 +153,9 @@
   <data name="ViewOwned" xml:space="preserve">
     <value>La vue est déjà utilisée par un autre objet.</value>
   </data>
+  <data name="ColumnOwned" xml:space="preserve">
+    <value>La colonne est déjà utilisée par un autre objet.</value>
+  </data>
   <data name="SegmentOwned" xml:space="preserve">
     <value>Le segment est déjà utilisée par une cellule.</value>
   </data>
@@ -161,5 +164,8 @@
   </data>
   <data name="ApplicationAlreadyRunning" xml:space="preserve">
     <value>L'application est déjà en train de fonctionner.</value>
+  </data>
+  <data name="InternalError" xml:space="preserve">
+    <value>Erreur interne.</value>
   </data>
 </root>

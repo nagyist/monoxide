@@ -59,6 +59,53 @@ namespace System.MacOS
 		[DllImport(libSystem)]
         [SuppressUnmanagedCodeSecurity]
 		public static extern int dlclose(IntPtr handle);
+
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		[return: MarshalAs(UnmanagedType.I1)]
+		public static extern bool class_addIvar(IntPtr cls, string name, IntPtr size, byte alignment, string types);
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		[return: MarshalAs(UnmanagedType.I1)]
+		public static extern bool class_addMethod(IntPtr cls, IntPtr sel, [In, MarshalAs(UnmanagedType.FunctionPtr)] Delegate imp, [In] string types);
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		[return: MarshalAs(UnmanagedType.I1)]
+		public static extern bool class_addProtocol(IntPtr cls, IntPtr protocol);
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		[return: MarshalAs(UnmanagedType.I1)]
+		public static extern bool class_conformsToProtocol(IntPtr cls, IntPtr protocol);
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		public extern static IntPtr class_createInstance(IntPtr cls, IntPtr extraBytes);
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		public extern static IntPtr class_getClassMethod(IntPtr aClass, IntPtr aSelector);
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		public extern static IntPtr class_getClassVariable(IntPtr cls, IntPtr name);
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		public extern static IntPtr class_getInstanceMethod(IntPtr aClass, IntPtr aSelector);
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		public extern static IntPtr class_getInstanceSize(IntPtr cls); // This could be used to inform the GC of allocated objects…
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		public extern static IntPtr class_getInstanceVariable(IntPtr cls, IntPtr name);
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		[return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(StringResultMarshaler))]
+		public extern static string class_getName(IntPtr cls);
+
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		[return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(StringResultMarshaler))]
+		public extern static string ivar_getName(IntPtr ivar);
+		[DllImport(libobjc)]
+		[SuppressUnmanagedCodeSecurity]
+		public extern static IntPtr ivar_getOffset(IntPtr ivar);
 		
 		[DllImport(libobjc)]
 		[SuppressUnmanagedCodeSecurity]
@@ -354,17 +401,5 @@ namespace System.MacOS
 		[DllImport(libobjc)]
 		[SuppressUnmanagedCodeSecurity]
 		public static extern void objc_registerClassPair(IntPtr cls);
-		
-		[DllImport(libobjc)]
-		[SuppressUnmanagedCodeSecurity]
-		[return: MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(StringResultMarshaler))]
-		public extern static string class_getName(IntPtr @class);
-		[DllImport(libobjc)]
-		[SuppressUnmanagedCodeSecurity]
-		public extern static IntPtr class_getInstanceSize(IntPtr @class); // This could be used to inform the GC of allocated objects…
-		[DllImport(libobjc)]
-		[SuppressUnmanagedCodeSecurity]
-		[return: MarshalAs(UnmanagedType.I1)]
-		public static extern bool class_addMethod(IntPtr cls, IntPtr sel, [In, MarshalAs(UnmanagedType.FunctionPtr)] Delegate imp, [In] string types);
 	}
 }

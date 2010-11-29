@@ -39,16 +39,19 @@ namespace System.MacOS.AppKit
 			
 			public void Add(TableColumn<TCell> item)
 			{
+				item.Owner = tableView;
+				tableView.columnList.Add(item);
 			}
 
 			public int IndexOf(TableColumn<TCell> item)
 			{
-				throw new NotImplementedException();
+				return tableView.columnList.IndexOf(item);
 			}
 
 			public void Insert(int index, TableColumn<TCell> item)
 			{
-				throw new NotImplementedException();
+				item.Owner = tableView;
+				tableView.columnList.Insert(index, item);
 			}
 
 			public void RemoveAt(int index)
@@ -63,12 +66,12 @@ namespace System.MacOS.AppKit
 
 			public bool Contains(TableColumn<TCell> item)
 			{
-				throw new NotImplementedException();
+				return tableView.columnList.Contains(item);
 			}
 
 			public void CopyTo(TableColumn<TCell>[] array, int arrayIndex)
 			{
-				throw new NotImplementedException();
+				tableView.columnList.CopyTo(array, arrayIndex);
 			}
 
 			public bool Remove(TableColumn<TCell> item)
@@ -93,9 +96,11 @@ namespace System.MacOS.AppKit
 		
 		static class Selectors
 		{
+			static class addTableColumn { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("addTableColumn:"); }
 			static class selectedRow { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("selectedRow"); }
 			static class selectedRowIndexes { public static readonly IntPtr SelectorHandle = ObjectiveC.GetSelector("selectedRowIndexes"); }
 			
+			public static IntPtr AddTableColumn { get { return addTableColumn.SelectorHandle; } }
 			public static IntPtr SelectedRow { get { return selectedRow.SelectorHandle; } }
 			public static IntPtr SelectedRowIndexes { get { return selectedRowIndexes.SelectorHandle; } }
 		}
@@ -107,9 +112,18 @@ namespace System.MacOS.AppKit
 		
 		public TableViewBase()
 		{
-			columnList = new List<TableColumn<TCell>>(2); // Having less than two columns would be pretty useless, but who knows…
+			columnList = new List<TableColumn<TCell>>(1);
 			columnCollection = new ColumnCollection(this);
 		}
+
+		internal override void OnCreated()
+		{
+			base.OnCreated();
+			foreach (var column in columnList)
+				SafeNativeMethods.objc_msgSend(NativePointer, Selectors.AddTableColumn, column.NativePointer);
+		}
+
+		public ColumnCollection Columns { get { return columnCollection; } }
 		
 		public int SelectedRow
 		{
@@ -120,6 +134,11 @@ namespace System.MacOS.AppKit
 					-1;
 			}
 		}
+
+		protected virtual string GetItemText(object item, TableColumn<TCell> column)
+		{
+			return item != null ? item.ToString() : null;
+		}
 		
 		public override object Clone()
 		{
@@ -128,9 +147,13 @@ namespace System.MacOS.AppKit
 			clone.columnList = new List<TableColumn<TCell>>(columnList.Count);
 			clone.columnCollection = new ColumnCollection(clone);
 			foreach (var column in columnList)
-				clone.columnList.Add(column);
+				clone.columnCollection.Add(column.Clone() as TableColumn<TCell>);
 			
 			return clone;
 		}
+
+		internal virtual void ColumnAdded(int index) { }
+		internal virtual void ColumnRemoved(int index, TableColumn<Cell> oldColumn) { }
+		internal virtual void ColumnChanged(int index, TableColumn<Cell> oldColumn) { }
 	}
 }

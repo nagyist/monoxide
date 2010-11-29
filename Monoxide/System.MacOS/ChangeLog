@@ -1,3 +1,90 @@
+2010-11-29  Fabien  <goldencrystal@gmail.com>
+
+	* System.MacOS.csproj: 
+
+	* SafeNativeMethods.CoreGraphics.cs: New native methods +
+	little code reorganization
+
+	* Segment.cs:
+	* SegmentedCell.cs: Updated the ownership code to the same
+	pattern as in other classes.
+
+	* TableViewBase.cs: Better column collection, but still not
+	fully functional.
+
+	* TableColumn.cs: Starting a really useful implementation.
+	Added most members (width & co still missing)
+
+	* ColumnSizingOptions.cs: Enum for column sizing in
+	TableViews. Not used yet.
+
+	* View.cs: Added localized exception text
+
+	* Cell.cs: Made the cell value working and much more useful !
+	:)
+
+	* GraphicsContext.cs: Bugfix + Lot of path goodness
+
+	* CommonSelectors.cs: New selectors added.
+
+	* PropertyGrid.cs: Making it a good test case for OutlineView.
+	Now correctly embeds the view in a ScrollView.
+	Shows basic object properties.
+
+	* OutlineViewBase.cs: Migrated to the new automatic bridging
+	feature
+	Added support for multiple columns
+	Began migrating things to TableView when they should be there
+
+	* DelayCreatedNativeObject.cs: !!! This is a template file !!!
+
+	* ObjectiveC.Bridging.cs: [Semi-Useless] Can now generate cool
+	names for nested classes: I think CLROutlineViewDelegate will
+	look better than CLRDelegate450 ;)
+	Added *the* line and a reminder to do some work on the
+	bridging engine.
+	This (commented) line is for storing managed objects as
+	GCHandle(s) inside native objects. This should bring better
+	native interop once implemented.
+
+	* SafeNativeMethods.cs: New native methods for objective-C
+	runtime interop.
+	I don't know how I missed the ivar_GetOffset the first time I
+	looked into these… T_T
+	Now most of the things needed for a better bridge engine are
+	here…
+
+	* NativeObject.cs: !!! Template file !!!
+
+	* ErrorMessages.resx:
+	* ErrorMessages.fr.resx: Added two new error messages
+
+	* LineCap.cs:
+	* LineJoin.cs:
+	* TextDrawingMode.cs: One of the enums for CGContext graphic
+	state
+
+	* PathDrawingMode.cs: Enum used for DrawPath method of
+	GraphicsContext
+
+	* Color.cs: The "var" keyword is better ! ;)
+	(Just trying to use the same style across all files)
+
+	* PathData.cs: Now really useful for drawing:
+	Can create a CGMutablePathRef or CGPathRef from data.
+	Can add itself directly onto a graphics context.
+	Can initialize from native CG[Mutable]Path data.
+
+	* TextEncoding.cs: Enum for text drawing. Not used yet… Maybe
+	never ? (All CGContext enums are now present)
+
+	* Path.cs: Real native interop, not really used yet.
+	Can create a managed object from a native CGPathRef, but
+	everything is still done by PathData.
+
+	* InterpolationQuality.cs: One of the enums for CGContext
+	graphic state.
+
 2010-11-26  Fabien  <goldencrystal@gmail.com>
 
 	* ObjectiveC.cs: Added and disabled a tweak for process and

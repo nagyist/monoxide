@@ -1,0 +1,9 @@
+2010-11-29  Fabien  <goldencrystal@gmail.com>
+
+	* BrowserWindow.cs: Make it work again… But not as good as
+	before
+
+	* DocTreeView.cs: Now we need to handle columns. (In fact all
+	the NSTableView and NSOutlineView interop were for the sake of
+	this… At the begining.)
+

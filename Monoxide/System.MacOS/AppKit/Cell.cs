@@ -104,7 +104,10 @@ namespace System.MacOS.AppKit
 			OnCreated();
 		}
 		
-		internal virtual void OnCreated() { }
+		internal virtual void OnCreated()
+		{
+			ApplyValue();
+		}
 		
 		public bool Disposed { get { return disposed; } }
 		
@@ -183,25 +186,30 @@ namespace System.MacOS.AppKit
 				{
 					this.value = value;
 					
-					if (Created)
-					{
-						switch (Type.GetTypeCode((this.value ?? DBNull.Value).GetType()))
-						{
-							case TypeCode.String:
-								SafeNativeMethods.objc_msgSend_set_String(NativePointer, CommonSelectors.SetStringValue, this.value as string);
-								break;
-							case TypeCode.DBNull:
-								SafeNativeMethods.objc_msgSend(NativePointer, IntPtr.Zero);
-								break;
-							default:
-								break;
-						}
-					}
+					if (Created) ApplyValue();
 				}
 			}
 		}
 		
 		public object Tag { get; set; }
+
+		private void ApplyValue()
+		{
+			switch (Type.GetTypeCode((this.value ?? DBNull.Value).GetType()))
+			{
+				case TypeCode.String:
+					SafeNativeMethods.objc_msgSend_set_String(super.Receiver, CommonSelectors.SetStringValue, this.value as string);
+					break;
+				case TypeCode.DBNull:
+					SafeNativeMethods.objc_msgSend(super.Receiver, CommonSelectors.SetObjectValue, IntPtr.Zero);
+					break;
+				case TypeCode.Object:
+					SafeNativeMethods.objc_msgSend(super.Receiver, CommonSelectors.SetObjectValue, ObjectiveC.GetNativeObject(value));
+					break;
+				default:
+					break;
+			}
+		}
 
 		public Size Measure(Size availableSize)
 		{
