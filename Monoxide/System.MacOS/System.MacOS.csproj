@@ -9,7 +9,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>System.MacOS</RootNamespace>
     <AssemblyName>System.MacOS</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\System.MacOS.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -185,6 +184,10 @@
     <Compile Include="CoreGraphics\LineCap.cs" />
     <Compile Include="CoreGraphics\TextEncoding.cs" />
     <Compile Include="CoreGraphics\PathDrawingMode.cs" />
+    <Compile Include="Foundation\URLProtocol.cs" />
+    <Compile Include="Foundation\Data.cs" />
+    <Compile Include="Foundation\URLProtocolClient.cs" />
+    <Compile Include="AppKit\ViewStyle.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AppKit\Commands.fr.resx" />
@@ -202,6 +205,7 @@
     <Folder Include="CoreGraphics\" />
     <Folder Include="CoreText\" />
     <Folder Include="CoreImage\" />
+    <Folder Include="Foundation\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
@@ -215,11 +219,7 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <None Include="..\..\..\..\..\..\Volumes\Data\Users\Fabien\Documents\MonoDevelop Projects\Monoxide\System.MacOS\DelayCreatedNativeObject.cs">
-      <Link>DelayCreatedNativeObject.cs</Link>
-    </None>
-    <None Include="..\..\..\..\..\..\Volumes\Data\Users\Fabien\Documents\MonoDevelop Projects\Monoxide\System.MacOS\NativeObject.cs">
-      <Link>NativeObject.cs</Link>
-    </None>
+    <None Include="DelayCreatedNativeObject.cs" />
+    <None Include="NativeObject.cs" />
   </ItemGroup>
 </Project>

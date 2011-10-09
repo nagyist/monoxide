@@ -251,10 +251,10 @@ namespace System.MacOS
 		public static extern IntPtr objc_msgSend_get_ObjectFromKey(IntPtr self, IntPtr sel, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string key);
 		[DllImport(libobjc, EntryPoint = "objc_msgSend")]
 		[SuppressUnmanagedCodeSecurity]
-		public static extern IntPtr objc_msgSend_set_ObjectForKey(IntPtr self, IntPtr sel, IntPtr obj, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string key);
+		public static extern void objc_msgSend_set_ObjectForKey(IntPtr self, IntPtr sel, IntPtr obj, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string key);
 		[DllImport(libobjc, EntryPoint = "objc_msgSend")]
 		[SuppressUnmanagedCodeSecurity]
-		public static extern IntPtr objc_msgSend_set_ObjectForKey(IntPtr self, IntPtr sel, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string obj, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string key);
+		public static extern void objc_msgSend_set_ObjectForKey(IntPtr self, IntPtr sel, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string obj, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string key);
 
 		[DllImport(libobjc, EntryPoint = "objc_msgSendSuper")]
 		[SuppressUnmanagedCodeSecurity]
@@ -271,10 +271,10 @@ namespace System.MacOS
 		public static extern IntPtr objc_msgSendSuper_get_ObjectFromKey(ref objc_super super, IntPtr sel, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string key);
 		[DllImport(libobjc, EntryPoint = "objc_msgSendSuper")]
 		[SuppressUnmanagedCodeSecurity]
-		public static extern IntPtr objc_msgSendSuper_set_ObjectForKey(ref objc_super super, IntPtr sel, IntPtr obj, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string key);
+		public static extern void objc_msgSendSuper_set_ObjectForKey(ref objc_super super, IntPtr sel, IntPtr obj, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string key);
 		[DllImport(libobjc, EntryPoint = "objc_msgSendSuper")]
 		[SuppressUnmanagedCodeSecurity]
-		public static extern IntPtr objc_msgSendSuper_set_ObjectForKey(ref objc_super super, IntPtr sel, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string obj, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string key);
+		public static extern void objc_msgSendSuper_set_ObjectForKey(ref objc_super super, IntPtr sel, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string obj, [MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(NativeStringMarshaler))] string key);
 
 		#endregion
 		

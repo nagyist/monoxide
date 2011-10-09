@@ -41,6 +41,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="BrowserWindow.cs" />
     <Compile Include="DocTreeView.cs" />
+    <Compile Include="MonoDocWebRequest.cs" />
+    <Compile Include="MonoDocWebResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

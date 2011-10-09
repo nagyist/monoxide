@@ -19,6 +19,7 @@ namespace MonoDocumentationBrowser
 		public BrowserWindow()
 		{
 			rootTree = RootTree.LoadTree(@"/Library/Frameworks/Mono.framework/Versions/Current/lib/monodoc");
+			MonoDocWebRequest.RegisterWithRootTree(rootTree);
 			treeView = new DocTreeView(rootTree);
 			treeView.SelectionChanged += treeView_SelectionChanged;
 			scrollView = new ScrollView() { Scrollers = Axis.Both };
@@ -83,7 +84,7 @@ namespace MonoDocumentationBrowser
 			try
 			{
 				Console.WriteLine("Visiting URL: {0}", node.PublicUrl);
-				url = new Uri(node.PublicUrl);
+				url = new Uri("MonoDoc:///" + Uri.EscapeDataString(node.PublicUrl));
 			}
 			catch (Exception ex) { Console.WriteLine(ex); }
 			

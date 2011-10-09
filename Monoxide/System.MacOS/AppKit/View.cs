@@ -155,7 +155,7 @@ namespace System.MacOS.AppKit
 			// effectively helps in ignoring external (non-managed) changes to the frame.
 			if (!(view.owner is View))
 			{
-				view.margin = new Thickness(frameRect.Left, frameRect.Top, frameRect.Left, frameRect.Top);
+				view.frame = frameRect;
 				view.Measure(frameRect.Size);
 				view.Arrange(frameRect);
 				view.ApplyFrame();
@@ -214,6 +214,7 @@ namespace System.MacOS.AppKit
 		
 		#endregion
 
+		private ViewStyle viewStyle;
 		private object owner;
 		private List<View> viewList;
 		private ViewCollection viewCollection;
@@ -225,9 +226,10 @@ namespace System.MacOS.AppKit
 		private HorizontalAlignment horizontalAlignment;
 		private VerticalAlignment verticalAlignment;
 		private bool measureValid, arrangeValid;
-		
+
 		public View()
 		{
+			viewStyle = ViewStyle.AllowChildMargin;
 			margin = new Thickness(0, 0, 0, 0);
 			width = double.NaN;
 			height = double.NaN;
@@ -259,7 +261,10 @@ namespace System.MacOS.AppKit
 				InitializeNative(ref nativePointer, frame);
 				super.Receiver = nativePointer;
 				viewCache.RegisterObject(this);
+				// It seems that, as an internal Cocoa optimization, the parent
+				// NSView won't call our resizeWithOldSuperviewSize: method if the mask is 0…
 				SafeNativeMethods.objc_msgSend(nativePointer, Selectors.SetAutoresizingMask, (IntPtr)63);
+				// Just to be safe, also force resizing of subviews
 				SafeNativeMethods.objc_msgSend_set_Boolean(nativePointer, Selectors.SetAutoresizesSubviews, true);
 				try { OnCreated(); }
 				catch // A fault handler would have been better…
@@ -434,12 +439,23 @@ namespace System.MacOS.AppKit
 		// For now the layout is basically the layout of a WPF grid with only one cell.
 		// Also, this seems to break the ScrollView and SplitView badly…
 
+		protected bool ParentAllowsMargin
+		{
+			get
+			{
+				var parent = owner as View;
+
+				return parent != null && (parent.viewStyle & ViewStyle.AllowChildMargin) != 0;
+			}
+		}
+
 		public bool IsMeasureValid { get { return measureValid; } }
 
 		public bool IsArrangeValid { get { return arrangeValid; } }
 
 		public void Measure(Size availableSize)
 		{
+			var margin = ParentAllowsMargin ? this.margin : Thickness.Zero;
 			var constraintSize = availableSize - margin; // Subtract the margin from available size
 
 			DesiredSize = MeasureOverride(constraintSize) + margin; // Measure the view and add the margin back
@@ -487,7 +503,7 @@ namespace System.MacOS.AppKit
 
 		public void Arrange(Rectangle finalRect)
 		{
-			var constraintRect = finalRect - margin;
+			var constraintRect = ParentAllowsMargin ? finalRect - margin : finalRect;
 
 			var arrangeSize = ArrangeOverride(constraintRect.Size);
 
@@ -552,82 +568,13 @@ namespace System.MacOS.AppKit
 		
 		public virtual Size ArrangeOverride(Size finalSize)
 		{
-			finalSize = DesiredSize - margin;
+			finalSize = ParentAllowsMargin ? DesiredSize - margin : DesiredSize;
 
 			foreach (var child in Children)
 				child.Arrange(new Rectangle(Point.Zero, finalSize));
 
 			return finalSize;
 		}
-
-//		private void Arrange()
-//		{
-//			if (Parent != null)
-//			{
-//				var parentSize = Parent.Frame.Size;
-//				double x, y, w, h;
-//
-//				// Process dimensions
-//
-//				// Width
-//				if (double.IsNaN(width))
-//					if (double.IsNaN(margin.Left) || double.IsNaN(margin.Right))
-//						if (double.IsNaN(minWidth)) w = 0;
-//						else w = minWidth;
-//					else w = parentSize.Width - margin.Left - margin.Right;
-//				else w = width;
-//				if (w > maxWidth) w = maxWidth;
-//				if (w < minWidth) w = minWidth;
-//				if (w < 0) w = 0;
-//
-//				// Height
-//				if (double.IsNaN(height))
-//					if (double.IsNaN(margin.Top) || double.IsNaN(margin.Bottom))
-//						if (double.IsNaN(minWidth)) h = 0;
-//						else h = minHeight;
-//					else h = parentSize.Height - margin.Top - margin.Bottom;
-//				else h = height;
-//				if (h > maxHeight) w = maxHeight;
-//				if (h < minHeight) w = minHeight;
-//				if (h < 0) w = 0;
-//
-//
-//				// Process position
-//
-//				// Horizontal
-//				if (double.IsNaN(margin.Left))
-//					if (double.IsNaN(margin.Right)) x = (parentSize.Width - w) / 2;
-//					else x = parentSize.Width - margin.Right - w;
-//				else
-//					if (double.IsNaN(margin.Right)) x = margin.Left;
-//					else x = margin.Left + (parentSize.Width - (w + margin.Left + margin.Right)) / 2;
-//
-////				// Vertical (Remember that y is going up in Cocoa…)
-////				if (double.IsNaN(margin.Bottom))
-////					if (double.IsNaN(margin.Top)) y = (parentSize.Height - h) / 2;
-////					else y = parentSize.Height - margin.Top - h;
-////				else
-////					if (double.IsNaN(margin.Top)) y = margin.Bottom;
-////					else y = margin.Bottom + (parentSize.Height - (h + margin.Top + margin.Bottom)) / 2;
-//				// Vertical (for flipped coordinates)
-//				if (double.IsNaN(margin.Top))
-//					if (double.IsNaN(margin.Bottom)) y = (parentSize.Height - h) / 2;
-//					else y = parentSize.Height - margin.Bottom - h;
-//				else
-//					if (double.IsNaN(margin.Bottom)) y = margin.Top;
-//					else y = margin.Top + (parentSize.Height - (h + margin.Top + margin.Bottom)) / 2;
-//	
-//				Frame = new Rectangle(x, y, w, h);
-//			}
-//			else
-//				Frame = new Rectangle(margin.Left, margin.Bottom, Width, Height);
-//		}
-//
-//		private void ArrangeChildren()
-//		{
-//			foreach (var child in viewList)
-//				child.Arrange();
-//		}
 
 		public object Owner
 		{

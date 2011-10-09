@@ -1,3 +1,15 @@
+2011-10-09  Fabien  <goldencrystal@gmail.com>
+
+	* Foundation:
+	* View.cs:
+	* Data.cs:
+	* System.MacOS.csproj:
+	* Thickness.cs:
+	* ViewStyle.cs:
+	* SafeNativeMethods.cs:
+	* URLProtocol.cs:
+	* URLProtocolClient.cs: 
+
 2010-11-29  Fabien  <goldencrystal@gmail.com>
 
 	* System.MacOS.csproj: 
