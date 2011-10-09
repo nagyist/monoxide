@@ -8,19 +8,21 @@ namespace System.MacOS.AppKit
 		public static Thickness Zero = new Thickness(0);
 
 		public Thickness(double uniformLength)
+			: this()
 		{
-			this.Left = uniformLength;
-			this.Top = uniformLength;
-			this.Right = uniformLength;
-			this.Bottom = uniformLength;
+			Left = uniformLength;
+			Top = uniformLength;
+			Right = uniformLength;
+			Bottom = uniformLength;
 		}
 		
 		public Thickness(double left, double top, double right, double bottom)
+			: this()
 		{
-			this.Left = left;
-			this.Top = top;
-			this.Right = right;
-			this.Bottom = bottom;
+			Left = left;
+			Top = top;
+			Right = right;
+			Bottom = bottom;
 		}
 		
 		public double Left { get; set; }

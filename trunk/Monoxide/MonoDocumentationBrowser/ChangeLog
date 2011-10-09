@@ -1,3 +1,10 @@
+2011-10-09  Fabien  <goldencrystal@gmail.com>
+
+	* BrowserWindow.cs:
+	* MonoDocWebRequest.cs:
+	* MonoDocWebResponse.cs:
+	* MonoDocumentationBrowser.csproj: 
+
 2010-11-29  Fabien  <goldencrystal@gmail.com>
 
 	* BrowserWindow.cs: Make it work again… But not as good as

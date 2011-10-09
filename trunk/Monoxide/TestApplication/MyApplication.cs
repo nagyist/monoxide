@@ -131,6 +131,7 @@ namespace TestApplication
 		
 		public void New(object sender)
 		{
+			new MainWindow().ShowAndMakeKey();
 			Console.WriteLine("New.");
 		}
 		
